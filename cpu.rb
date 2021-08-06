@@ -1,3 +1,4 @@
+require './trilingual.rb'
 
 # Registers are as follows:
 # B:C - general purpose register pair
@@ -8,24 +9,23 @@
 # P - program counter
 # Y - comparison register
 # Z - check trit register
-@regB = 0
-@regC = 0
-@regD = 0
-@regE = 0
-@regF = 0
-@regG = 0
-@regK = 0
-@regO = 0
-@regP = 0
-@regY = 0
-@regZ = 0
-$reslt = 0 # global var for result passing
+$regB = 0
+$regC = 0
+$regD = 0
+$regE = 0
+$regF = 0
+$regG = 0
+$regK = 0
+$regO = 0
+$regP = 0
+$regY = 0
+$regZ = 0
 #=---------------------------------=#
 opNOP = Proc.new { nil } # no operation, do nothing
 opRSA = Proc.new { @regB = @regC = @regD = @regE = @regF = @regG = @regK = @regO = @regP = @regY = @regZ = 0 } # reset all registers
 opSBC = Proc.new { t = @regB; @regB = @regC; @regC = t } # swap registers B & C
-opSDE = Proc.new { t = @regB; @regB = @regC; @regC = t } # swap registers D & E
-opSFG = Proc.new { t = @regB; @regB = @regC; @regC = t } # swap registers F & G
+opSDE = Proc.new { t = @regD; @regD = @regE; @regE = t } # swap registers D & E
+opSFG = Proc.new { t = @regF; @regF = @regG; @regG = t } # swap registers F & G
 opTS1 = Proc.new {|x| x + 1 } # test most significant trit (><= 0)
 opTS2 = Proc.new {|x| x + 1 } # test most significant trit -1 (><= 0)
 opTS3 = Proc.new {|x| x + 1 } # test most significant trit -2 (><= 0)
@@ -47,7 +47,7 @@ opPUT = Proc.new {|x| x + 1 } # store in memory
 opGET = Proc.new {|x| x + 1 } # load from memory
 opINC = Proc.new {|x| x + 1 } # increment (add 1)
 opDEC = Proc.new {|x| x + 1 } # decrement (subtract 1)
-opSET = Proc.new {|i1| $reslt = i1 } # set register value
+opSET = Proc.new {|r1, i1| t = ObjectSpace._id2ref(r1); t = i1 } # set register value
 opADD = Proc.new {|x| x + 1 } # basic addition
 opADI = Proc.new {|x| x + 1 } # add immediate
 opSUB = Proc.new {|x| x + 1 } # basic subtraction
@@ -80,23 +80,23 @@ opBGE = Proc.new {|x| x + 1 } # branch if greater than or equal
             "SDE" => [4, opSDE],  # swap registers D & E
             "SFG" => [5, opSFG],  # swap registers F & G
 #--------------------------+ 1-ARG INST +-----------#
-            "TS1" => [6, opTS1],  # test most significant trit (><= 0)
-            "TS2" => [7, opTS2],  # test most significant trit -1 (><= 0)
-            "TS3" => [8, opTS3],  # test most significant trit -2 (><= 0)
-            "TS4" => [9, opTS4],  # test most significant trit -3 (><= 0)
-            "TS5" => [10, opTS5], # test most significant trit -4 (><= 0)
-            "TS6" => [11, opTS6], # test most significant trit -5 (><= 0)
-            "TS7" => [12, opTS7], # test most significant trit -6 (><= 0)
-            "TS8" => [13, opTS8], # test most significant trit -7 (><= 0)
-            "TS9" => [14, opTS9], # test least significant trit (><= 0)
-            "JMP" => [15, opJMP], # jump unconditionally
-            "JAL" => [16, opJAL], # jump and link
-            "RST" => [17, opRST], # reset register
-            "PSH" => [18, opPSH], # push into the stack
-            "POP" => [19, opPOP], # pop out of the stack
-            "SHR" => [20, opSHR], # shift right by one trit
-            "SHL" => [21, opSHL], # shift left by one trit
-            "CRC" => [22, opCRC], # calculate check trit (via sequential XOR)
+            "TS1" => [6, opTS1],  #FMT: "OP R1" test most significant trit (><= 0)
+            "TS2" => [7, opTS2],  #FMT: "OP R1" test most significant trit -1 (><= 0)
+            "TS3" => [8, opTS3],  #FMT: "OP R1" test most significant trit -2 (><= 0)
+            "TS4" => [9, opTS4],  #FMT: "OP R1" test most significant trit -3 (><= 0)
+            "TS5" => [10, opTS5], #FMT: "OP R1" test most significant trit -4 (><= 0)
+            "TS6" => [11, opTS6], #FMT: "OP R1" test most significant trit -5 (><= 0)
+            "TS7" => [12, opTS7], #FMT: "OP R1" test most significant trit -6 (><= 0)
+            "TS8" => [13, opTS8], #FMT: "OP R1" test most significant trit -7 (><= 0)
+            "TS9" => [14, opTS9], #FMT: "OP R1" test least significant trit (><= 0)
+            "JMP" => [15, opJMP], #FMT: "OP R1" jump unconditionally to address in R1
+            "JAL" => [16, opJAL], #FMT: "OP R1" jump and link to address in R1
+            "RST" => [17, opRST], #FMT: "OP R1" reset register R1
+            "PSH" => [18, opPSH], #FMT: "OP R1" push R1 into the stack
+            "POP" => [19, opPOP], #FMT: "OP R1" pop out of the stack into R1
+            "SHR" => [20, opSHR], #FMT: "OP R1" shift R1 right by one trit
+            "SHL" => [21, opSHL], #FMT: "OP R1" shift R1 left by one trit
+            "CRC" => [22, opCRC], #FMT: "OP R1" calculate check trit (via sequential XOR) on R1
 #--------------------------+ 2-ARG INST +-----------#
             "PUT" => [23, opPUT], # store in memory
             "GET" => [24, opGET], # load from memory
@@ -130,19 +130,23 @@ opBGE = Proc.new {|x| x + 1 } # branch if greater than or equal
 
 
 @inst_list = ["SET $B 7", "SET $C 8", "SUB $B $C $D", "SBC", "SUB $B $C $D", "NOP"]
+reg_list = {"$B" => @regB, "$D" => @regD, "$F" => @regF, "$K" => @regK, "$P" => @regP, "$Y" => @regY, 
+            "$C" => @regC, "$E" => @regE, "$G" => @regG, "$O" => @regO, "$Z" => @regZ}
 
 for inst in @inst_list do
     ops = inst.split(" ")
     if @inst_set.key?(ops[0])
         op0 = @inst_set[ops[0]]
         if op0[0] < 6      #op0 1-5
-            puts 1
+            op0[1].call
         elsif op0[0] < 23  #op0 6-22
-            puts 2
+            op1 = reg_list[ops[1]]
+            a = op1.object_id
+            op0[1].call(a)
         elsif op0[0] < 28  #op0 23-27
-            puts 3
+            op0[1].call#(a, b)
         else               #op0 28-50
-            puts 4
+            op0[1].call#(a, b, c)
         end
     else
         puts "#{ops[0]} is not a valid instruction!"
