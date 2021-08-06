@@ -19,13 +19,13 @@
 @regP = 0
 @regY = 0
 @regZ = 0
+$reslt = 0 # global var for result passing
 #=---------------------------------=#
-opADD = Proc.new {|r1, r2, r3| r3 = r1 + r2 }
-opNOP = Proc.new {|x| x + 1 } # no operation, do nothing
-opRSA = Proc.new {|x| x + 1 } # reset all registers
-opSBC = Proc.new {|x| x + 1 } # swap registers B & C
-opSDE = Proc.new {|x| x + 1 } # swap registers D & E
-opSFG = Proc.new {|x| x + 1 } # swap registers F & G
+opNOP = Proc.new { nil } # no operation, do nothing
+opRSA = Proc.new { @regB = @regC = @regD = @regE = @regF = @regG = @regK = @regO = @regP = @regY = @regZ = 0 } # reset all registers
+opSBC = Proc.new { t = @regB; @regB = @regC; @regC = t } # swap registers B & C
+opSDE = Proc.new { t = @regB; @regB = @regC; @regC = t } # swap registers D & E
+opSFG = Proc.new { t = @regB; @regB = @regC; @regC = t } # swap registers F & G
 opTS1 = Proc.new {|x| x + 1 } # test most significant trit (><= 0)
 opTS2 = Proc.new {|x| x + 1 } # test most significant trit -1 (><= 0)
 opTS3 = Proc.new {|x| x + 1 } # test most significant trit -2 (><= 0)
@@ -47,7 +47,7 @@ opPUT = Proc.new {|x| x + 1 } # store in memory
 opGET = Proc.new {|x| x + 1 } # load from memory
 opINC = Proc.new {|x| x + 1 } # increment (add 1)
 opDEC = Proc.new {|x| x + 1 } # decrement (subtract 1)
-opSET = Proc.new {|x| x + 1 } # set register value
+opSET = Proc.new {|i1| $reslt = i1 } # set register value
 opADD = Proc.new {|x| x + 1 } # basic addition
 opADI = Proc.new {|x| x + 1 } # add immediate
 opSUB = Proc.new {|x| x + 1 } # basic subtraction
@@ -133,8 +133,8 @@ opBGE = Proc.new {|x| x + 1 } # branch if greater than or equal
 
 for inst in @inst_list do
     ops = inst.split(" ")
-    if @inst_set.has?(ops[0])
-        op0 = ops[0]
+    if @inst_set.key?(ops[0])
+        op0 = @inst_set[ops[0]]
         if op0[0] < 6      #op0 1-5
             puts 1
         elsif op0[0] < 23  #op0 6-22
@@ -148,9 +148,6 @@ for inst in @inst_list do
         puts "#{ops[0]} is not a valid instruction!"
     end
 end
-        
-
-opADD = Proc.new {|r1, r2, r3| r3 = r1 + r2 }
 
 
 
