@@ -22,10 +22,10 @@ $regY = 0
 $regZ = 0
 #=---------------------------------=#
 opNOP = Proc.new { nil } # no operation, do nothing
-opRSA = Proc.new { @regB = @regC = @regD = @regE = @regF = @regG = @regK = @regO = @regP = @regY = @regZ = 0 } # reset all registers
-opSBC = Proc.new { t = @regB; @regB = @regC; @regC = t } # swap registers B & C
-opSDE = Proc.new { t = @regD; @regD = @regE; @regE = t } # swap registers D & E
-opSFG = Proc.new { t = @regF; @regF = @regG; @regG = t } # swap registers F & G
+opRSA = Proc.new { $regB = $regC = $regD = $regE = $regF = $regG = $regK = $regO = $regP = $regY = $regZ = 0 } # reset all registers
+opSBC = Proc.new { t = $regB; $regB = $regC; $regC = t } # swap registers B & C
+opSDE = Proc.new { t = $regD; $regD = $regE; $regE = t } # swap registers D & E
+opSFG = Proc.new { t = $regF; $regF = $regG; $regG = t } # swap registers F & G
 opTS1 = Proc.new {|x| x + 1 } # test most significant trit (><= 0)
 opTS2 = Proc.new {|x| x + 1 } # test most significant trit -1 (><= 0)
 opTS3 = Proc.new {|x| x + 1 } # test most significant trit -2 (><= 0)
@@ -130,8 +130,8 @@ opBGE = Proc.new {|x| x + 1 } # branch if greater than or equal
 
 
 @inst_list = ["SET $B 7", "SET $C 8", "SUB $B $C $D", "SBC", "SUB $B $C $D", "NOP"]
-reg_list = {"$B" => @regB, "$D" => @regD, "$F" => @regF, "$K" => @regK, "$P" => @regP, "$Y" => @regY, 
-            "$C" => @regC, "$E" => @regE, "$G" => @regG, "$O" => @regO, "$Z" => @regZ}
+reg_list = {"$B" => $regB, "$D" => $regD, "$F" => $regF, "$K" => $regK, "$P" => $regP, "$Y" => $regY, 
+            "$C" => $regC, "$E" => $regE, "$G" => $regG, "$O" => $regO, "$Z" => $regZ}
 
 for inst in @inst_list do
     ops = inst.split(" ")
