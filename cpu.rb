@@ -22,12 +22,13 @@ $regY = 0
 $regZ = 0
 reg_list = {"$B" => $regB, "$D" => $regD, "$F" => $regF, "$K" => $regK, "$P" => $regP, "$Y" => $regY, 
             "$C" => $regC, "$E" => $regE, "$G" => $regG, "$O" => $regO, "$Z" => $regZ}
-#=---------------------------------=#
+#=-------------------------+ 0-ARG INST +------------=#
 opNOP = Proc.new { nil } # no operation, do nothing
 opRSA = Proc.new { $regB = $regC = $regD = $regE = $regF = $regG = $regK = $regO = $regP = $regY = $regZ = 0 } # reset all registers
 opSBC = Proc.new { t = $regB; $regB = $regC; $regC = t } # swap registers B & C
 opSDE = Proc.new { t = $regD; $regD = $regE; $regE = t } # swap registers D & E
 opSFG = Proc.new { t = $regF; $regF = $regG; $regG = t } # swap registers F & G
+#=-------------------------+ 1-ARG INST +------------=#
 opTS1 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[0])} # test most significant trit (><= 0)
 opTS2 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[1])} # test most significant trit +1 (><= 0)
 opTS3 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[2])} # test most significant trit +2 (><= 0)
@@ -45,11 +46,13 @@ opPOP = Proc.new { 1 + 1 } # pop out of the stack
 opSHR = Proc.new { 1 + 1 } # shift right by one trit
 opSHL = Proc.new { 1 + 1 } # shift left by one trit
 opCRC = Proc.new { 1 + 1 } # calculate check trit (via sequential XOR)
+#=-------------------------+ 2-ARG INST +------------=#
 opPUT = Proc.new { 1 + 1 } # store in memory
 opGET = Proc.new { 1 + 1 } # load from memory
 opINC = Proc.new { 1 + 1 } # increment (add 1)
 opDEC = Proc.new { 1 + 1 } # decrement (subtract 1)
-opSET = Proc.new { 1 + 1 } # set register value
+opSET = Proc.new {|a, b| reg_list[a] = b} # set register value
+#=-------------------------+ 3-ARG INST +------------=#
 opADD = Proc.new { 1 + 1 } # basic addition
 opADI = Proc.new { 1 + 1 } # add immediate
 opSUB = Proc.new { 1 + 1 } # basic subtraction
@@ -135,31 +138,56 @@ opBGE = Proc.new { 1 + 1 } # branch if greater than or equal
 @inst_list = ["SET $B 7", "SET $C 8", "SUB $B $C $D", "SBC", "SUB $B $C $D", "NOP"]
 
 def interpret(list)
-for inst in list do
-    ops = inst.split(" ")
-    if @inst_set.key?(ops[0])
-        op0 = @inst_set[ops[0]]
-#=================================// 0ARG, op0 1-5
-        if op0[0] < 6      
-            op0[1].call
-#=================================// 1ARG, op0 6-22
-        elsif op0[0] < 23
-            op0[1].call(ops[1])
-#=================================// 2ARG, op0 23-27
-        elsif op0[0] < 28
-            op0[1].call(ops[1], ops[2])
-#=================================// 3ARG, op0 28-50
+    for inst in list do
+        ops = inst.split(" ")
+        if @inst_set.key?(ops[0])
+            op0 = @inst_set[ops[0]]
+#========================================// 0ARG, op0 1-5
+            if op0[0] < 6      
+                op0[1].call
+#========================================// 1ARG, op0 6-22
+            elsif op0[0] < 23
+                op0[1].call(ops[1])
+#========================================// 2ARG, op0 23-27
+            elsif op0[0] < 28
+                op0[1].call(ops[1], ops[2])
+#========================================// 3ARG, op0 28-50
+            else
+                op0[1].call(ops[1], ops[2], ops[3])
+            end
         else
-            op0[1].call(ops[1], ops[2], ops[3])
+            puts "#{ops[0]} is not a valid instruction!"
         end
-    else
-        puts "#{ops[0]} is not a valid instruction!"
     end
 end
 
+puts "PRE-INST:
+$regB = #{$regB},
+$regC = #{$regC},
+$regD = #{$regD},
+$regE = #{$regE},
+$regF = #{$regF},
+$regG = #{$regG},
+$regK = #{$regK},
+$regO = #{$regO},
+$regP = #{$regP},
+$regY = #{$regY},
+$regZ = #{$regZ},"
+
 interpret(@inst_list)
 
-
+puts "POST-INST:
+$regB = #{$regB},
+$regC = #{$regC},
+$regD = #{$regD},
+$regE = #{$regE},
+$regF = #{$regF},
+$regG = #{$regG},
+$regK = #{$regK},
+$regO = #{$regO},
+$regP = #{$regP},
+$regY = #{$regY},
+$regZ = #{$regZ},"
 
 
 
