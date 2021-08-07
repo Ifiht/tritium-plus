@@ -1,4 +1,5 @@
 require 'fox16'
+require './cpu.rb'
 
 include Fox
 

@@ -26,51 +26,51 @@ opRSA = Proc.new { $regB = $regC = $regD = $regE = $regF = $regG = $regK = $regO
 opSBC = Proc.new { t = $regB; $regB = $regC; $regC = t } # swap registers B & C
 opSDE = Proc.new { t = $regD; $regD = $regE; $regE = t } # swap registers D & E
 opSFG = Proc.new { t = $regF; $regF = $regG; $regG = t } # swap registers F & G
-opTS1 = Proc.new {|x| x + 1 } # test most significant trit (><= 0)
-opTS2 = Proc.new {|x| x + 1 } # test most significant trit -1 (><= 0)
-opTS3 = Proc.new {|x| x + 1 } # test most significant trit -2 (><= 0)
-opTS4 = Proc.new {|x| x + 1 } # test most significant trit -3 (><= 0)
-opTS5 = Proc.new {|x| x + 1 } # test most significant trit -4 (><= 0)
-opTS6 = Proc.new {|x| x + 1 } # test most significant trit -5 (><= 0)
-opTS7 = Proc.new {|x| x + 1 } # test most significant trit -6 (><= 0)
-opTS8 = Proc.new {|x| x + 1 } # test most significant trit -7 (><= 0)
-opTS9 = Proc.new {|x| x + 1 } # test least significant trit (><= 0)
-opJMP = Proc.new {|x| x + 1 } # jump unconditionally
-opJAL = Proc.new {|x| x + 1 } # jump and link
-opRST = Proc.new {|x| x + 1 } # reset register
-opPSH = Proc.new {|x| x + 1 } # push into the stack
-opPOP = Proc.new {|x| x + 1 } # pop out of the stack
-opSHR = Proc.new {|x| x + 1 } # shift right by one trit
-opSHL = Proc.new {|x| x + 1 } # shift left by one trit
-opCRC = Proc.new {|x| x + 1 } # calculate check trit (via sequential XOR)
-opPUT = Proc.new {|x| x + 1 } # store in memory
-opGET = Proc.new {|x| x + 1 } # load from memory
-opINC = Proc.new {|x| x + 1 } # increment (add 1)
-opDEC = Proc.new {|x| x + 1 } # decrement (subtract 1)
-opSET = Proc.new {|r1, i1| t = ObjectSpace._id2ref(r1); t = i1 } # set register value
-opADD = Proc.new {|x| x + 1 } # basic addition
-opADI = Proc.new {|x| x + 1 } # add immediate
-opSUB = Proc.new {|x| x + 1 } # basic subtraction
-opSBI = Proc.new {|x| x + 1 } # subtract immediate
-opMLT = Proc.new {|x| x + 1 } # multiply
-opMYI = Proc.new {|x| x + 1 } # multiply immediate
-opDIV = Proc.new {|x| x + 1 } # divide
-opDVI = Proc.new {|x| x + 1 } # divide immediate
-opPOW = Proc.new {|x| x + 1 } # power operator
-opLOG = Proc.new {|x| x + 1 } # logarithm operator
-opAND = Proc.new {|x| x + 1 } # logical "AND"
-opANI = Proc.new {|x| x + 1 } # logical "AND", immediate
-opORR = Proc.new {|x| x + 1 } # logical "OR"
-opORI = Proc.new {|x| x + 1 } # logical "OR", immediate
-opNOR = Proc.new {|x| x + 1 } # logical "NOR"
-opXOR = Proc.new {|x| x + 1 } # logical "XOR"
-opMOD = Proc.new {|x| x + 1 } # modulus operator 
-opBEQ = Proc.new {|x| x + 1 } # branch if equal
-opBNE = Proc.new {|x| x + 1 } # branch if not equal
-opBLT = Proc.new {|x| x + 1 } # branch if less than
-opBLE = Proc.new {|x| x + 1 } # branch if less than or equal
-opBGT = Proc.new {|x| x + 1 } # branch if greater than
-opBGE = Proc.new {|x| x + 1 } # branch if greater than or equal
+opTS1 = Proc.new {|x| s = trans10to3(x); $regY = trans3to10(s[0])} # test most significant trit (><= 0)
+opTS2 = Proc.new { 1 + 1 } # test most significant trit -1 (><= 0)
+opTS3 = Proc.new { 1 + 1 } # test most significant trit -2 (><= 0)
+opTS4 = Proc.new { 1 + 1 } # test most significant trit -3 (><= 0)
+opTS5 = Proc.new { 1 + 1 } # test most significant trit -4 (><= 0)
+opTS6 = Proc.new { 1 + 1 } # test most significant trit -5 (><= 0)
+opTS7 = Proc.new { 1 + 1 } # test most significant trit -6 (><= 0)
+opTS8 = Proc.new { 1 + 1 } # test most significant trit -7 (><= 0)
+opTS9 = Proc.new { 1 + 1 } # test least significant trit (><= 0)
+opJMP = Proc.new { 1 + 1 } # jump unconditionally
+opJAL = Proc.new { 1 + 1 } # jump and link
+opRST = Proc.new { 1 + 1 } # reset register
+opPSH = Proc.new { 1 + 1 } # push into the stack
+opPOP = Proc.new { 1 + 1 } # pop out of the stack
+opSHR = Proc.new { 1 + 1 } # shift right by one trit
+opSHL = Proc.new { 1 + 1 } # shift left by one trit
+opCRC = Proc.new { 1 + 1 } # calculate check trit (via sequential XOR)
+opPUT = Proc.new { 1 + 1 } # store in memory
+opGET = Proc.new { 1 + 1 } # load from memory
+opINC = Proc.new { 1 + 1 } # increment (add 1)
+opDEC = Proc.new { 1 + 1 } # decrement (subtract 1)
+opSET = Proc.new { 1 + 1 } # set register value
+opADD = Proc.new { 1 + 1 } # basic addition
+opADI = Proc.new { 1 + 1 } # add immediate
+opSUB = Proc.new { 1 + 1 } # basic subtraction
+opSBI = Proc.new { 1 + 1 } # subtract immediate
+opMLT = Proc.new { 1 + 1 } # multiply
+opMYI = Proc.new { 1 + 1 } # multiply immediate
+opDIV = Proc.new { 1 + 1 } # divide
+opDVI = Proc.new { 1 + 1 } # divide immediate
+opPOW = Proc.new { 1 + 1 } # power operator
+opLOG = Proc.new { 1 + 1 } # logarithm operator
+opAND = Proc.new { 1 + 1 } # logical "AND"
+opANI = Proc.new { 1 + 1 } # logical "AND", immediate
+opORR = Proc.new { 1 + 1 } # logical "OR"
+opORI = Proc.new { 1 + 1 } # logical "OR", immediate
+opNOR = Proc.new { 1 + 1 } # logical "NOR"
+opXOR = Proc.new { 1 + 1 } # logical "XOR"
+opMOD = Proc.new { 1 + 1 } # modulus operator 
+opBEQ = Proc.new { 1 + 1 } # branch if equal
+opBNE = Proc.new { 1 + 1 } # branch if not equal
+opBLT = Proc.new { 1 + 1 } # branch if less than
+opBLE = Proc.new { 1 + 1 } # branch if less than or equal
+opBGT = Proc.new { 1 + 1 } # branch if greater than
+opBGE = Proc.new { 1 + 1 } # branch if greater than or equal
 
 # INSTRUCTIONS are 27 trits long, each op-code is 9 trits.
 @inst_set = { #-------------+ 0-ARG INST +-------------#
@@ -137,15 +137,18 @@ for inst in @inst_list do
     ops = inst.split(" ")
     if @inst_set.key?(ops[0])
         op0 = @inst_set[ops[0]]
-        if op0[0] < 6      #op0 1-5
+#=================================// op0 1-5
+        if op0[0] < 6      
             op0[1].call
-        elsif op0[0] < 23  #op0 6-22
+#=================================// op0 6-22
+        elsif op0[0] < 23
             op1 = reg_list[ops[1]]
-            a = op1.object_id
-            op0[1].call(a)
-        elsif op0[0] < 28  #op0 23-27
+            op0[1].call(op1)
+#=================================// op0 23-27
+        elsif op0[0] < 28
             op0[1].call#(a, b)
-        else               #op0 28-50
+#=================================// op0 28-50
+        else
             op0[1].call#(a, b, c)
         end
     else
