@@ -20,21 +20,23 @@ $regO = 0
 $regP = 0
 $regY = 0
 $regZ = 0
+reg_list = {"$B" => $regB, "$D" => $regD, "$F" => $regF, "$K" => $regK, "$P" => $regP, "$Y" => $regY, 
+            "$C" => $regC, "$E" => $regE, "$G" => $regG, "$O" => $regO, "$Z" => $regZ}
 #=---------------------------------=#
 opNOP = Proc.new { nil } # no operation, do nothing
 opRSA = Proc.new { $regB = $regC = $regD = $regE = $regF = $regG = $regK = $regO = $regP = $regY = $regZ = 0 } # reset all registers
 opSBC = Proc.new { t = $regB; $regB = $regC; $regC = t } # swap registers B & C
 opSDE = Proc.new { t = $regD; $regD = $regE; $regE = t } # swap registers D & E
 opSFG = Proc.new { t = $regF; $regF = $regG; $regG = t } # swap registers F & G
-opTS1 = Proc.new {|x| s = trans10to3(x); $regY = trans3to10(s[0])} # test most significant trit (><= 0)
-opTS2 = Proc.new { 1 + 1 } # test most significant trit -1 (><= 0)
-opTS3 = Proc.new { 1 + 1 } # test most significant trit -2 (><= 0)
-opTS4 = Proc.new { 1 + 1 } # test most significant trit -3 (><= 0)
-opTS5 = Proc.new { 1 + 1 } # test most significant trit -4 (><= 0)
-opTS6 = Proc.new { 1 + 1 } # test most significant trit -5 (><= 0)
-opTS7 = Proc.new { 1 + 1 } # test most significant trit -6 (><= 0)
-opTS8 = Proc.new { 1 + 1 } # test most significant trit -7 (><= 0)
-opTS9 = Proc.new { 1 + 1 } # test least significant trit (><= 0)
+opTS1 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[0])} # test most significant trit (><= 0)
+opTS2 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[1])} # test most significant trit +1 (><= 0)
+opTS3 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[2])} # test most significant trit +2 (><= 0)
+opTS4 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[3])} # test most significant trit +3 (><= 0)
+opTS5 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[4])} # test most significant trit +4 (><= 0)
+opTS6 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[5])} # test most significant trit +5 (><= 0)
+opTS7 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[6])} # test most significant trit +6 (><= 0)
+opTS8 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[7])} # test most significant trit +7 (><= 0)
+opTS9 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[8])} # test least significant trit (><= 0)
 opJMP = Proc.new { 1 + 1 } # jump unconditionally
 opJAL = Proc.new { 1 + 1 } # jump and link
 opRST = Proc.new { 1 + 1 } # reset register
@@ -73,12 +75,13 @@ opBGT = Proc.new { 1 + 1 } # branch if greater than
 opBGE = Proc.new { 1 + 1 } # branch if greater than or equal
 
 # INSTRUCTIONS are 27 trits long, each op-code is 9 trits.
+# R# refers to a general register, while N# refers to an integer value
 @inst_set = { #-------------+ 0-ARG INST +-------------#
-            "NOP" => [1, opNOP],  # no operation, do nothing
-            "RSA" => [2, opRSA],  # reset all registers
-            "SBC" => [3, opSBC],  # swap registers B & C
-            "SDE" => [4, opSDE],  # swap registers D & E
-            "SFG" => [5, opSFG],  # swap registers F & G
+            "NOP" => [1, opNOP],  #FMT: "OP" no operation, do nothing
+            "RSA" => [2, opRSA],  #FMT: "OP" reset all registers
+            "SBC" => [3, opSBC],  #FMT: "OP" swap registers B & C
+            "SDE" => [4, opSDE],  #FMT: "OP" swap registers D & E
+            "SFG" => [5, opSFG],  #FMT: "OP" swap registers F & G
 #--------------------------+ 1-ARG INST +-----------#
             "TS1" => [6, opTS1],  #FMT: "OP R1" test most significant trit (><= 0)
             "TS2" => [7, opTS2],  #FMT: "OP R1" test most significant trit -1 (><= 0)
@@ -98,65 +101,63 @@ opBGE = Proc.new { 1 + 1 } # branch if greater than or equal
             "SHL" => [21, opSHL], #FMT: "OP R1" shift R1 left by one trit
             "CRC" => [22, opCRC], #FMT: "OP R1" calculate check trit (via sequential XOR) on R1
 #--------------------------+ 2-ARG INST +-----------#
-            "PUT" => [23, opPUT], # store in memory
-            "GET" => [24, opGET], # load from memory
-            "INC" => [25, opINC], # increment (add 1)
-            "DEC" => [26, opDEC], # decrement (subtract 1)
-            "SET" => [27, opSET], # set register value
+            "PUT" => [23, opPUT], #FMT: "OP R1 R2" store R2 in memory address of R1
+            "GET" => [24, opGET], #FMT: "OP R1 R2" load R2 memory address into R1
+            "INC" => [25, opINC], #FMT: "OP R1 R2" increment (add 1) R2, store in R1
+            "DEC" => [26, opDEC], #FMT: "OP R1 R2" decrement (subtract 1) R2, store in R1
+            "SET" => [27, opSET], #FMT: "OP R1 N1" set register value R1 equal to N1 (integer)
 #--------------------------+ 3-ARG INST +-----------#
-            "ADD" => [28, opADD], # basic addition
-            "ADI" => [29, opADI], # add immediate
-            "SUB" => [30, opSUB], # basic subtraction
-            "SBI" => [31, opSBI], # subtract immediate
-            "MLT" => [32, opMLT], # multiply
-            "MYI" => [33, opMYI], # multiply immediate
-            "DIV" => [34, opDIV], # divide
-            "DVI" => [35, opDVI], # divide immediate
-            "POW" => [36, opPOW], # power operator
-            "LOG" => [37, opLOG], # logarithm operator
-            "AND" => [38, opAND], # logical "AND"
-            "ANI" => [39, opANI], # logical "AND", immediate
-            "ORR" => [40, opORR], # logical "OR"
-            "ORI" => [41, opORI], # logical "OR", immediate
-            "NOR" => [42, opNOR], # logical "NOR"
-            "XOR" => [43, opXOR], # logical "XOR"
-            "MOD" => [44, opMOD], # modulus operator 
-            "BEQ" => [45, opBEQ], # branch if equal
-            "BNE" => [46, opBNE], # branch if not equal
-            "BLT" => [47, opBLT], # branch if less than
-            "BLE" => [48, opBLE], # branch if less than or equal
-            "BGT" => [49, opBGT], # branch if greater than
-            "BGE" => [50, opBGE]} # branch if greater than or equal
+            "ADD" => [28, opADD], #FMT: "OP R1 R2 R3"  basic addition, R1 = R2 + R3
+            "ADI" => [29, opADI], #FMT: "OP R1 R2 N1"  add immediate, R1 = R2 + N1
+            "SUB" => [30, opSUB], #FMT: "OP R1 R2 R3"  basic subtraction, R1 = R2 - R3
+            "SBI" => [31, opSBI], #FMT: "OP R1 R2 N1"  subtract immediate, R1 = R2 - N1
+            "MLT" => [32, opMLT], #FMT: "OP R1 R2 R3"  multiply, R1 = R2 * R3
+            "MYI" => [33, opMYI], #FMT: "OP R1 R2 N1"  multiply immediate, R1 = R2 * N1
+            "DIV" => [34, opDIV], #FMT: "OP R1 R2 R3"  divide, R1 = R2 / R3
+            "DVI" => [35, opDVI], #FMT: "OP R1 R2 N1"  divide immediate, R1 = R2 / N1
+            "POW" => [36, opPOW], #FMT: "OP R1 R2 R3"  power operator, R1 = R2^R3
+            "LOG" => [37, opLOG], #FMT: "OP R1 R2 R3"  logarithm operator, R1 = logR2 (R3)
+            "AND" => [38, opAND], #FMT: "OP R1 R2 R3"  logical "AND", R1 = R2 AND R3
+            "ANI" => [39, opANI], #FMT: "OP R1 R2 N1"  logical "AND", immediate, R1 = R2 AND N1
+            "ORR" => [40, opORR], #FMT: "OP R1 R2 R3"  logical "OR", R1 = R2 OR R3
+            "ORI" => [41, opORI], #FMT: "OP R1 R2 N1"  logical "OR", immediate, R1 = R2 OR N1
+            "NOR" => [42, opNOR], #FMT: "OP R1 R2 R3"  logical "NOR", R1 = R2 NOR R3
+            "XOR" => [43, opXOR], #FMT: "OP R1 R2 R3"  logical "XOR", R1 = R2 XOR R3
+            "MOD" => [44, opMOD], #FMT: "OP R1 R2 R3"  modulus operator , R1 = R2 % R3
+            "BEQ" => [45, opBEQ], #FMT: "OP R1 R2 R3"  branch to R1 if R2 equal R3
+            "BNE" => [46, opBNE], #FMT: "OP R1 R2 R3"  branch to R1 if R2 not equal R3
+            "BLT" => [47, opBLT], #FMT: "OP R1 R2 R3"  branch to R1 if R2 less than R3
+            "BLE" => [48, opBLE], #FMT: "OP R1 R2 R3"  branch to R1 if R2 less than or equal R3
+            "BGT" => [49, opBGT], #FMT: "OP R1 R2 R3"  branch to R1 if R2 greater than R3
+            "BGE" => [50, opBGE]} #FMT: "OP R1 R2 R3"  branch to R1 if R2 greater than or equal R3
 
 
 @inst_list = ["SET $B 7", "SET $C 8", "SUB $B $C $D", "SBC", "SUB $B $C $D", "NOP"]
-reg_list = {"$B" => $regB, "$D" => $regD, "$F" => $regF, "$K" => $regK, "$P" => $regP, "$Y" => $regY, 
-            "$C" => $regC, "$E" => $regE, "$G" => $regG, "$O" => $regO, "$Z" => $regZ}
 
-for inst in @inst_list do
+def interpret(list)
+for inst in list do
     ops = inst.split(" ")
     if @inst_set.key?(ops[0])
         op0 = @inst_set[ops[0]]
-#=================================// op0 1-5
+#=================================// 0ARG, op0 1-5
         if op0[0] < 6      
             op0[1].call
-#=================================// op0 6-22
+#=================================// 1ARG, op0 6-22
         elsif op0[0] < 23
-            op1 = reg_list[ops[1]]
-            op0[1].call(op1)
-#=================================// op0 23-27
+            op0[1].call(ops[1])
+#=================================// 2ARG, op0 23-27
         elsif op0[0] < 28
-            op0[1].call#(a, b)
-#=================================// op0 28-50
+            op0[1].call(ops[1], ops[2])
+#=================================// 3ARG, op0 28-50
         else
-            op0[1].call#(a, b, c)
+            op0[1].call(ops[1], ops[2], ops[3])
         end
     else
         puts "#{ops[0]} is not a valid instruction!"
     end
 end
 
-
+interpret(@inst_list)
 
 
 
