@@ -1,9 +1,5 @@
 require 'fox16'
 require './window.rb'
-require './cpu.rb'
-
-$data_mem = "".rjust(10, '0')
-
 
 def runApp
   # Make application

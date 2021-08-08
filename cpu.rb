@@ -29,69 +29,69 @@ $regZ = Register.new(0)
 reg_list = {"$B" => $regB, "$D" => $regD, "$F" => $regF, "$K" => $regK, "$P" => $regP, "$Y" => $regY, 
             "$C" => $regC, "$E" => $regE, "$G" => $regG, "$O" => $regO, "$Z" => $regZ}
 #=-------------------------+ 0-ARG INST +------------=#
-opNOP = Proc.new { nil } # no operation, do nothing
-opRSA = Proc.new { $regB.vlu=0;
- $regC.vlu=0;
-  $regD.vlu=0;
-   $regE.vlu=0;
-    $regF.vlu=0;
-     $regG.vlu=0;
-      $regK.vlu=0;
-       $regO.vlu=0;
-        $regP.vlu=0;
-         $regY.vlu=0;
-          $regZ.vlu=0} # reset all registers
-opSBC = Proc.new { t = $regB.vlu; $regB.vlu = $regC.vlu; $regC.vlu = t } # swap registers B & C
-opSDE = Proc.new { t = $regD.vlu; $regD.vlu = $regE.vlu; $regE.vlu = t } # swap registers D & E
-opSFG = Proc.new { t = $regF.vlu; $regF.vlu = $regG.vlu; $regG.vlu = t } # swap registers F & G
+opNOP = lambda {|st| return st } # no operation, do nothing
+opRSA = lambda {|st|  st["$B"]=trans10to3(0);
+                      st["$C"]=trans10to3(0);
+                      st["$D"]=trans10to3(0);
+                      st["$E"]=trans10to3(0);
+                      st["$F"]=trans10to3(0);
+                      st["$G"]=trans10to3(0);
+                      st["$K"]=trans10to3(0);
+                      st["$O"]=trans10to3(0);
+                      st["$P"]=trans10to3(0);
+                      st["$Y"]=trans10to3(0);
+                      st["$Z"]=trans10to3(0); return st} # reset all registers
+opSBC = lambda { t = $regB.vlu; $regB.vlu = $regC.vlu; $regC.vlu = t } # swap registers B & C
+opSDE = lambda { t = $regD.vlu; $regD.vlu = $regE.vlu; $regE.vlu = t } # swap registers D & E
+opSFG = lambda { t = $regF.vlu; $regF.vlu = $regG.vlu; $regG.vlu = t } # swap registers F & G
 #=-------------------------+ 1-ARG INST +------------=#
-opTS1 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[0])} # test most significant trit (><= 0)
-opTS2 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[1])} # test most significant trit +1 (><= 0)
-opTS3 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[2])} # test most significant trit +2 (><= 0)
-opTS4 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[3])} # test most significant trit +3 (><= 0)
-opTS5 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[4])} # test most significant trit +4 (><= 0)
-opTS6 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[5])} # test most significant trit +5 (><= 0)
-opTS7 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[6])} # test most significant trit +6 (><= 0)
-opTS8 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[7])} # test most significant trit +7 (><= 0)
-opTS9 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[8])} # test least significant trit (><= 0)
-opJMP = Proc.new { 1 + 1 } # jump unconditionally
-opJAL = Proc.new { 1 + 1 } # jump and link
-opRST = Proc.new { 1 + 1 } # reset register
-opPSH = Proc.new { 1 + 1 } # push into the stack
-opPOP = Proc.new { 1 + 1 } # pop out of the stack
-opSHR = Proc.new { 1 + 1 } # shift right by one trit
-opSHL = Proc.new { 1 + 1 } # shift left by one trit
-opCRC = Proc.new { 1 + 1 } # calculate check trit (via sequential XOR)
+opTS1 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[0])} # test most significant trit (><= 0)
+opTS2 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[1])} # test most significant trit +1 (><= 0)
+opTS3 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[2])} # test most significant trit +2 (><= 0)
+opTS4 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[3])} # test most significant trit +3 (><= 0)
+opTS5 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[4])} # test most significant trit +4 (><= 0)
+opTS6 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[5])} # test most significant trit +5 (><= 0)
+opTS7 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[6])} # test most significant trit +6 (><= 0)
+opTS8 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[7])} # test most significant trit +7 (><= 0)
+opTS9 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[8])} # test least significant trit (><= 0)
+opJMP = lambda { 1 + 1 } # jump unconditionally
+opJAL = lambda { 1 + 1 } # jump and link
+opRST = lambda { 1 + 1 } # reset register
+opPSH = lambda { 1 + 1 } # push into the stack
+opPOP = lambda { 1 + 1 } # pop out of the stack
+opSHR = lambda { 1 + 1 } # shift right by one trit
+opSHL = lambda { 1 + 1 } # shift left by one trit
+opCRC = lambda { 1 + 1 } # calculate check trit (via sequential XOR)
 #=-------------------------+ 2-ARG INST +------------=#
-opPUT = Proc.new { 1 + 1 } # store in memory
-opGET = Proc.new { 1 + 1 } # load from memory
-opINC = Proc.new { 1 + 1 } # increment (add 1)
-opDEC = Proc.new { 1 + 1 } # decrement (subtract 1)
-opSET = Proc.new {|a, b| reg_list[a].vlu = b} # set register value
+opPUT = lambda { 1 + 1 } # store in memory
+opGET = lambda { 1 + 1 } # load from memory
+opINC = lambda { 1 + 1 } # increment (add 1)
+opDEC = lambda { 1 + 1 } # decrement (subtract 1)
+opSET = lambda {|st, a, b| st[a] = trans10to3(b.to_i); return st} # set register value
 #=-------------------------+ 3-ARG INST +------------=#
-opADD = Proc.new { 1 + 1 } # basic addition
-opADI = Proc.new { 1 + 1 } # add immediate
-opSUB = Proc.new { 1 + 1 } # basic subtraction
-opSBI = Proc.new { 1 + 1 } # subtract immediate
-opMLT = Proc.new { 1 + 1 } # multiply
-opMYI = Proc.new { 1 + 1 } # multiply immediate
-opDIV = Proc.new { 1 + 1 } # divide
-opDVI = Proc.new { 1 + 1 } # divide immediate
-opPOW = Proc.new { 1 + 1 } # power operator
-opLOG = Proc.new { 1 + 1 } # logarithm operator
-opAND = Proc.new { 1 + 1 } # logical "AND"
-opANI = Proc.new { 1 + 1 } # logical "AND", immediate
-opORR = Proc.new { 1 + 1 } # logical "OR"
-opORI = Proc.new { 1 + 1 } # logical "OR", immediate
-opNOR = Proc.new { 1 + 1 } # logical "NOR"
-opXOR = Proc.new { 1 + 1 } # logical "XOR"
-opMOD = Proc.new { 1 + 1 } # modulus operator 
-opBEQ = Proc.new { 1 + 1 } # branch if equal
-opBNE = Proc.new { 1 + 1 } # branch if not equal
-opBLT = Proc.new { 1 + 1 } # branch if less than
-opBLE = Proc.new { 1 + 1 } # branch if less than or equal
-opBGT = Proc.new { 1 + 1 } # branch if greater than
-opBGE = Proc.new { 1 + 1 } # branch if greater than or equal
+opADD = lambda { 1 + 1 } # basic addition
+opADI = lambda { 1 + 1 } # add immediate
+opSUB = lambda { 1 + 1 } # basic subtraction
+opSBI = lambda { 1 + 1 } # subtract immediate
+opMLT = lambda { 1 + 1 } # multiply
+opMYI = lambda { 1 + 1 } # multiply immediate
+opDIV = lambda { 1 + 1 } # divide
+opDVI = lambda { 1 + 1 } # divide immediate
+opPOW = lambda { 1 + 1 } # power operator
+opLOG = lambda { 1 + 1 } # logarithm operator
+opAND = lambda { 1 + 1 } # logical "AND"
+opANI = lambda { 1 + 1 } # logical "AND", immediate
+opORR = lambda { 1 + 1 } # logical "OR"
+opORI = lambda { 1 + 1 } # logical "OR", immediate
+opNOR = lambda { 1 + 1 } # logical "NOR"
+opXOR = lambda { 1 + 1 } # logical "XOR"
+opMOD = lambda { 1 + 1 } # modulus operator 
+opBEQ = lambda { 1 + 1 } # branch if equal
+opBNE = lambda { 1 + 1 } # branch if not equal
+opBLT = lambda { 1 + 1 } # branch if less than
+opBLE = lambda { 1 + 1 } # branch if less than or equal
+opBGT = lambda { 1 + 1 } # branch if greater than
+opBGE = lambda { 1 + 1 } # branch if greater than or equal
 
 # INSTRUCTIONS are 27 trits long, each op-code is 9 trits.
 # R# refers to a general register, while N# refers to an integer value
@@ -153,27 +153,27 @@ $inst_set = { #-------------+ 0-ARG INST +-------------#
 
 @inst_list = ["SET $B 7", "SET $C 8", "SUB $B $C $D", "SBC", "SUB $B $C $D", "NOP"]
 
-def interpret(list)
-    for inst in list do
-        ops = inst.split(" ")
-        if $inst_set.key?(ops[0])
-            op0 = $inst_set[ops[0]]
+
+def interpret(inst, state)
+    ops = inst.split(" ")
+    if $inst_set.key?(ops[0])
+        op0 = $inst_set[ops[0]]
 #========================================// 0ARG, op0 1-5
-            if op0[0] < 6      
-                op0[1].call
+        if op0[0] < 6      
+            state = op0[1].call(state)
 #========================================// 1ARG, op0 6-22
-            elsif op0[0] < 23
-                op0[1].call(ops[1])
+        elsif op0[0] < 23
+            state = op0[1].call(state, ops[1])
 #========================================// 2ARG, op0 23-27
-            elsif op0[0] < 28
-                op0[1].call(ops[1], ops[2])
+        elsif op0[0] < 28
+            state = op0[1].call(state, ops[1], ops[2])
 #========================================// 3ARG, op0 28-50
-            else
-                op0[1].call(ops[1], ops[2], ops[3])
-            end
         else
-            puts "#{ops[0]} is not a valid instruction!"
+            state = op0[1].call(state, ops[1], ops[2], ops[3])
         end
+        return state
+    else
+        puts "#{ops[0]} is not a valid instruction!"
     end
 end
 
