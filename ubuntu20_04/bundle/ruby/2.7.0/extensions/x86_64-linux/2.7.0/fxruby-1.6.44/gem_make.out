@@ -1,0 +1,61 @@
+current directory: /home/modi/dev/tritium-plus/ubuntu20_04/bundle/ruby/2.7.0/gems/fxruby-1.6.44/ext/fox16_c
+/home/modi/.rvm/rubies/ruby-2.7.2/bin/ruby -I /home/modi/.rvm/rubies/ruby-2.7.2/lib/ruby/2.7.0 -r ./siteconf20210808-1872981-1dze2bb.rb extconf.rb
+checking for fox per pkg-config... yes
+checking for fxscintilla per pkg-config... no
+checking for fxscintilla on Ubuntu with missing libfxscintilla.so link... no
+checking for fxscintilla build... no
+checking for sys/time.h... yes
+checking for signal.h... yes
+checking for deflate() in -lz... yes
+checking for png_create_read_struct() in -lpng... yes
+checking for jpeg_mem_init() in -ljpeg... yes
+checking for TIFFSetErrorHandler() in -ltiff... yes
+checking for XftInit() in -lXft... yes
+checking for XShmQueryVersion() in -lXext... yes
+checking for XFindContext() in -lX11... yes
+checking for glXCreateContext() in -lGL... yes
+checking for gluNewQuadric() in -lGLU... yes
+checking for thread local variables... yes
+checking for rb_thread_call_without_gvl()... yes
+checking for rb_thread_call_with_gvl()... yes
+checking for rb_during_gc()... yes
+creating extconf.h
+creating Makefile
+
+current directory: /home/modi/dev/tritium-plus/ubuntu20_04/bundle/ruby/2.7.0/gems/fxruby-1.6.44/ext/fox16_c
+make "DESTDIR=" clean
+
+current directory: /home/modi/dev/tritium-plus/ubuntu20_04/bundle/ruby/2.7.0/gems/fxruby-1.6.44/ext/fox16_c
+make "DESTDIR="
+compiling FXRbApp.cpp
+compiling FXRbDataTarget.cpp
+compiling FXRbGLViewer.cpp
+compiling FXRbObjRegistry.cpp
+compiling FXRuby.cpp
+compiling core_wrap.cpp
+compiling dc_wrap.cpp
+compiling dialogs_wrap.cpp
+compiling frames_wrap.cpp
+compiling fx3d_wrap.cpp
+compiling gvl_wrappers.cpp
+compiling iconlist_wrap.cpp
+compiling icons_wrap.cpp
+compiling image_wrap.cpp
+compiling impl.cpp
+compiling label_wrap.cpp
+compiling layout_wrap.cpp
+compiling list_wrap.cpp
+compiling markfuncs.cpp
+compiling mdi_wrap.cpp
+compiling menu_wrap.cpp
+compiling scintilla_wrap.cpp
+compiling table_wrap.cpp
+compiling text_wrap.cpp
+compiling treelist_wrap.cpp
+compiling ui_wrap.cpp
+compiling unregisterOwnedObjects.cpp
+linking shared-object fox16_c.so
+
+current directory: /home/modi/dev/tritium-plus/ubuntu20_04/bundle/ruby/2.7.0/gems/fxruby-1.6.44/ext/fox16_c
+make "DESTDIR=" install
+/usr/bin/install -m 0755 fox16_c.so ./.gem.20210808-1872981-4ncgdy
