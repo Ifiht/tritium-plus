@@ -68,3 +68,26 @@ def trans3to10(s)
         return retnum
     end
 end
+#| OP-CODE  | 1st REG | 2nd ARG  |  3rd ARG  | Unused/CRC
+#   0000       0000    000000000   000000000     0
+def decode_inst(s)
+    arg1 = s.slice!(0..3).rjust(5, '0')
+    arg2 = s.slice!(0..3).rjust(5, '0')
+    arg3 = s.slice!(0..8)
+    arg4 = s.slice!(0..8)
+    n1 = trans3to10(arg1)
+    n2 = trans3to10(arg2)
+    n3 = trans3to10(arg3)
+    n4 = trans3to10(arg4)
+    return [n1, n2, n3, n4]
+end
+
+def recode_inst(a)
+    s1 = trans10to3(a[0]).slice!(5..8)
+    s2 = trans10to3(a[1]).slice!(5..8)
+    s3 = trans10to3(a[2])
+    s4 = trans10to3(a[3])
+    str = s1 + s2 + s3 + s4
+    str = str.ljust(1, '0')
+    return str
+end

@@ -28,6 +28,8 @@ $regY = Register.new(0)
 $regZ = Register.new(0)
 reg_list = {"$B" => $regB, "$D" => $regD, "$F" => $regF, "$K" => $regK, "$P" => $regP, "$Y" => $regY, 
             "$C" => $regC, "$E" => $regE, "$G" => $regG, "$O" => $regO, "$Z" => $regZ}
+reg_num = {"$B" => 0, "$D" => 2, "$F" => 4, "$K" => 6, "$P" => 8, "$Y" => 9, 
+           "$C" => 1, "$E" => 3, "$G" => 5, "$O" => 7, "$Z" => 10}
 #=-------------------------+ 0-ARG INST +------------=#
 opNOP = lambda {|st| return st } # no operation, do nothing
 opRSA = lambda {|st|  st["$B"]=trans10to3(0);
@@ -45,15 +47,15 @@ opSBC = lambda { t = $regB.vlu; $regB.vlu = $regC.vlu; $regC.vlu = t } # swap re
 opSDE = lambda { t = $regD.vlu; $regD.vlu = $regE.vlu; $regE.vlu = t } # swap registers D & E
 opSFG = lambda { t = $regF.vlu; $regF.vlu = $regG.vlu; $regG.vlu = t } # swap registers F & G
 #=-------------------------+ 1-ARG INST +------------=#
-opTS1 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[0])} # test most significant trit (><= 0)
-opTS2 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[1])} # test most significant trit +1 (><= 0)
-opTS3 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[2])} # test most significant trit +2 (><= 0)
-opTS4 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[3])} # test most significant trit +3 (><= 0)
-opTS5 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[4])} # test most significant trit +4 (><= 0)
-opTS6 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[5])} # test most significant trit +5 (><= 0)
-opTS7 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[6])} # test most significant trit +6 (><= 0)
-opTS8 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[7])} # test most significant trit +7 (><= 0)
-opTS9 = lambda {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[8])} # test least significant trit (><= 0)
+opTS1 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[0]); return st} # test most significant trit (><= 0)
+opTS2 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[1]); return st} # test most significant trit +1 (><= 0)
+opTS3 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[2]); return st} # test most significant trit +2 (><= 0)
+opTS4 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[3]); return st} # test most significant trit +3 (><= 0)
+opTS5 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[4]); return st} # test most significant trit +4 (><= 0)
+opTS6 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[5]); return st} # test most significant trit +5 (><= 0)
+opTS7 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[6]); return st} # test most significant trit +6 (><= 0)
+opTS8 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[7]); return st} # test most significant trit +7 (><= 0)
+opTS9 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[8]); return st} # test least significant trit (><= 0)
 opJMP = lambda { 1 + 1 } # jump unconditionally
 opJAL = lambda { 1 + 1 } # jump and link
 opRST = lambda { 1 + 1 } # reset register
@@ -93,8 +95,10 @@ opBLE = lambda { 1 + 1 } # branch if less than or equal
 opBGT = lambda { 1 + 1 } # branch if greater than
 opBGE = lambda { 1 + 1 } # branch if greater than or equal
 
-# INSTRUCTIONS are 27 trits long, each op-code is 9 trits.
+# INSTRUCTIONS are 27 trits long, each op-code is 4 trits.
 # R# refers to a general register, while N# refers to an integer value
+#| OP-CODE  | 1st REG | 2nd ARG  |  3rd ARG  | Unused
+#   0000       000     000000000   000000000   00
 $inst_set = { #-------------+ 0-ARG INST +-------------#
             "NOP" => [1, opNOP],  #FMT: "OP" no operation, do nothing
             "RSA" => [2, opRSA],  #FMT: "OP" reset all registers
@@ -156,21 +160,46 @@ $inst_set = { #-------------+ 0-ARG INST +-------------#
 
 def interpret(inst, state)
     ops = inst.split(" ")
+    meminst = ""
     if $inst_set.key?(ops[0])
         op0 = $inst_set[ops[0]]
 #========================================// 0ARG, op0 1-5
-        if op0[0] < 6      
-            state = op0[1].call(state)
+        if op0[0] < 6
+            if op0.count != 0
+                puts "wrong number of arguments to #{ops[0]}"
+            else
+                state = op0[1].call(state)
+                meminst = trans10to3(op0[0]) + "000000000000000000"
+            end
 #========================================// 1ARG, op0 6-22
         elsif op0[0] < 23
-            state = op0[1].call(state, ops[1])
+            if op0.count != 0
+                puts "wrong number of arguments to #{ops[0]}"
+            else
+                state = op0[1].call(state, ops[1])
+                meminst = trans10to3(op0[0]) + "000000000000000000"
+            end
 #========================================// 2ARG, op0 23-27
         elsif op0[0] < 28
-            state = op0[1].call(state, ops[1], ops[2])
+            if op0.count != 0
+                puts "wrong number of arguments to #{ops[0]}"
+            else
+                state = op0[1].call(state, ops[1], ops[2])
+                meminst = trans10to3(op0[0]) + "000000000000000000"
+            end
 #========================================// 3ARG, op0 28-50
         else
-            state = op0[1].call(state, ops[1], ops[2], ops[3])
+            if op0.count != 0
+                puts "wrong number of arguments to #{ops[0]}"
+            else
+                state = op0[1].call(state, ops[1], ops[2], ops[3])
+                meminst = trans10to3(op0[0]) + "000000000000000000"
+            end
         end
+        pc_0 = trans3to10(state["$P"])
+        pc_stop = pc_0 + 27
+        state["IMEM"].slice!(pc_0..pc_stop)
+        state["IMEM"] = state["IMEM"].insert(pc_0, meminst)
         return state
     else
         puts "#{ops[0]} is not a valid instruction!"

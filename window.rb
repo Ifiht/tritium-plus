@@ -93,6 +93,7 @@ class EightBitVM < FXMainWindow
 			FXLabel.new(reg_splitter, "Reg $Z:")
 		$reg_Z = FXTextField.new(reg_splitter, 8, self, FRAME_SUNKEN|FRAME_THICK|
     	 	LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|TEXTFIELD_READONLY)
+		FXHorizontalSeparator.new(reg_splitter, SEPARATOR_NONE|LAYOUT_FILL_Y)
 		splitter_rpanel = FXSplitter.new(rpanel, LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|SPLITTER_VERTICAL|SPLITTER_TRACKING)
 		FXLabel.new(splitter_rpanel, "Memory contents (data<0, inst>0):", :opts => JUSTIFY_CENTER_X ).setFont(FXFont.new(getApp(), "Consolas", 11, FONTWEIGHT_BOLD))
 		@tx_memory = FXText.new(splitter_rpanel, self, TEXT_READONLY|TEXT_WORDWRAP|
@@ -129,11 +130,14 @@ class EightBitVM < FXMainWindow
 		@tx_memory.selector = FXWindow::ID_SETVALUE
 		@tx_memory.text = @prog_mem
 		@tx_memory.textStyle = TEXT_WORDWRAP
-		@tx_memory.setFont(FXFont.new(getApp(), "Consolas", 10))
+		@tx_memory.setFont(FXFont.new(getApp(), "Consolas", 9))
 
 		@input_text.target = @text_r
 		@input_text.visibleRows = 30
 		@input_text.selector = FXWindow::ID_SETVALUE
+		@input_text.setFont(FXFont.new(getApp(), "Consolas", 12))
+
+		@output_text.setFont(FXFont.new(getApp(), "Consolas", 14))
 
 		@state = [$regB.vlu, $regC.vlu, $regD.vlu, $regE.vlu, $regF.vlu, $regG.vlu, 
     					$regK.vlu, $regO.vlu, $regP.vlu, $regY.vlu, $regZ.vlu, @inst_mem, @data_mem]
@@ -163,18 +167,23 @@ def onCmdAssemble(sender, sel, ptr)
   	line.sub!(/ *$/, "")
   	@state = interpret(line, @state)
     $reg_B.text = @state["$B"]; $regB = @state["$B"]
-    #@reg_B.text = @state[1]
-    #@reg_B.text = @state[2]
-    #@reg_B.text = @state[3]
-    #@reg_B.text = @state[4]
-    #@reg_B.text = @state[5]
-    #@reg_B.text = @state[6]
-    #@reg_B.text = @state[7]
-    #@reg_B.text = @state[8]
-    #@reg_B.text = @state[9]
-    #@reg_B.text = @state[10]
-    #@inst_mem = @state[11]
-    #@data_mem = @state[12]
+    $reg_C.text = @state["$C"]; $regB = @state["$C"]
+    $reg_D.text = @state["$D"]; $regB = @state["$D"]
+    $reg_E.text = @state["$E"]; $regB = @state["$E"]
+    $reg_F.text = @state["$F"]; $regB = @state["$F"]
+    $reg_G.text = @state["$G"]; $regB = @state["$G"]
+    $reg_K.text = @state["$K"]; $regB = @state["$K"]
+    $reg_O.text = @state["$O"]; $regB = @state["$O"]
+    $reg_P.text = @state["$P"]; $regB = @state["$P"]
+    $reg_Y.text = @state["$Y"]; $regB = @state["$Y"]
+    $reg_Z.text = @state["$Z"]; $regB = @state["$Z"]
+    @inst_mem = @state["IMEM"]
+    @data_mem = @state["DMEM"]
   }
-  @prog_mem = @inst_mem + "101010101" + @data_mem
+  pc_0 = trans3to10(@state["$P"])
+	pc_stop = pc_0 + 27
+	meminst = @state["IMEM"].slice(pc_0..pc_stop) + "\r\n"
+	@output_text.appendText(meminst)
+  @prog_mem = @data_mem + "101010101" + @inst_mem
+  @tx_memory.text = @prog_mem
 end
