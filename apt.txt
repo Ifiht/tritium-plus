@@ -1,1 +1,4 @@
 apt-utils
+pkg-config
+make
+gcc
