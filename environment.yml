@@ -3,4 +3,3 @@ channels:
   - conda-forge
 dependencies:
   - ruby=2.5.*
-  - openjdk

@@ -1,5 +1,11 @@
 require './trilingual.rb'
 
+class Register
+    attr_accessor :vlu
+    def initialize(vlu)
+        @vlu = vlu
+    end
+end
 # Registers are as follows:
 # B:C - general purpose register pair
 # D:E - general purpose register pair
@@ -9,35 +15,45 @@ require './trilingual.rb'
 # P - program counter
 # Y - comparison register
 # Z - check trit register
-$regB = 0
-$regC = 0
-$regD = 0
-$regE = 0
-$regF = 0
-$regG = 0
-$regK = 0
-$regO = 0
-$regP = 0
-$regY = 0
-$regZ = 0
+$regB = Register.new(0)
+$regC = Register.new(0)
+$regD = Register.new(0)
+$regE = Register.new(0)
+$regF = Register.new(0)
+$regG = Register.new(0)
+$regK = Register.new(0)
+$regO = Register.new(0)
+$regP = Register.new(0)
+$regY = Register.new(0)
+$regZ = Register.new(0)
 reg_list = {"$B" => $regB, "$D" => $regD, "$F" => $regF, "$K" => $regK, "$P" => $regP, "$Y" => $regY, 
             "$C" => $regC, "$E" => $regE, "$G" => $regG, "$O" => $regO, "$Z" => $regZ}
 #=-------------------------+ 0-ARG INST +------------=#
 opNOP = Proc.new { nil } # no operation, do nothing
-opRSA = Proc.new { $regB = $regC = $regD = $regE = $regF = $regG = $regK = $regO = $regP = $regY = $regZ = 0 } # reset all registers
-opSBC = Proc.new { t = $regB; $regB = $regC; $regC = t } # swap registers B & C
-opSDE = Proc.new { t = $regD; $regD = $regE; $regE = t } # swap registers D & E
-opSFG = Proc.new { t = $regF; $regF = $regG; $regG = t } # swap registers F & G
+opRSA = Proc.new { $regB.vlu=0;
+ $regC.vlu=0;
+  $regD.vlu=0;
+   $regE.vlu=0;
+    $regF.vlu=0;
+     $regG.vlu=0;
+      $regK.vlu=0;
+       $regO.vlu=0;
+        $regP.vlu=0;
+         $regY.vlu=0;
+          $regZ.vlu=0} # reset all registers
+opSBC = Proc.new { t = $regB.vlu; $regB.vlu = $regC.vlu; $regC.vlu = t } # swap registers B & C
+opSDE = Proc.new { t = $regD.vlu; $regD.vlu = $regE.vlu; $regE.vlu = t } # swap registers D & E
+opSFG = Proc.new { t = $regF.vlu; $regF.vlu = $regG.vlu; $regG.vlu = t } # swap registers F & G
 #=-------------------------+ 1-ARG INST +------------=#
-opTS1 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[0])} # test most significant trit (><= 0)
-opTS2 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[1])} # test most significant trit +1 (><= 0)
-opTS3 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[2])} # test most significant trit +2 (><= 0)
-opTS4 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[3])} # test most significant trit +3 (><= 0)
-opTS5 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[4])} # test most significant trit +4 (><= 0)
-opTS6 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[5])} # test most significant trit +5 (><= 0)
-opTS7 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[6])} # test most significant trit +6 (><= 0)
-opTS8 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[7])} # test most significant trit +7 (><= 0)
-opTS9 = Proc.new {|a| s = trans10to3(a); $regY = trans3to10(s[8])} # test least significant trit (><= 0)
+opTS1 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[0])} # test most significant trit (><= 0)
+opTS2 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[1])} # test most significant trit +1 (><= 0)
+opTS3 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[2])} # test most significant trit +2 (><= 0)
+opTS4 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[3])} # test most significant trit +3 (><= 0)
+opTS5 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[4])} # test most significant trit +4 (><= 0)
+opTS6 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[5])} # test most significant trit +5 (><= 0)
+opTS7 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[6])} # test most significant trit +6 (><= 0)
+opTS8 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[7])} # test most significant trit +7 (><= 0)
+opTS9 = Proc.new {|a| s = trans10to3(a); $regY.vlu = trans3to10(s[8])} # test least significant trit (><= 0)
 opJMP = Proc.new { 1 + 1 } # jump unconditionally
 opJAL = Proc.new { 1 + 1 } # jump and link
 opRST = Proc.new { 1 + 1 } # reset register
@@ -51,7 +67,7 @@ opPUT = Proc.new { 1 + 1 } # store in memory
 opGET = Proc.new { 1 + 1 } # load from memory
 opINC = Proc.new { 1 + 1 } # increment (add 1)
 opDEC = Proc.new { 1 + 1 } # decrement (subtract 1)
-opSET = Proc.new {|a, b| reg_list[a] = b} # set register value
+opSET = Proc.new {|a, b| reg_list[a].vlu = b} # set register value
 #=-------------------------+ 3-ARG INST +------------=#
 opADD = Proc.new { 1 + 1 } # basic addition
 opADI = Proc.new { 1 + 1 } # add immediate
@@ -161,33 +177,8 @@ def interpret(list)
     end
 end
 
-puts "PRE-INST:
-$regB = #{$regB},
-$regC = #{$regC},
-$regD = #{$regD},
-$regE = #{$regE},
-$regF = #{$regF},
-$regG = #{$regG},
-$regK = #{$regK},
-$regO = #{$regO},
-$regP = #{$regP},
-$regY = #{$regY},
-$regZ = #{$regZ},"
+#interpret(@inst_list)
 
-interpret(@inst_list)
-
-puts "POST-INST:
-$regB = #{$regB},
-$regC = #{$regC},
-$regD = #{$regD},
-$regE = #{$regE},
-$regF = #{$regF},
-$regG = #{$regG},
-$regK = #{$regK},
-$regO = #{$regO},
-$regP = #{$regP},
-$regY = #{$regY},
-$regZ = #{$regZ},"
 
 
 

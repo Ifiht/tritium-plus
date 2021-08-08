@@ -5,4 +5,8 @@ cd /home/jovyan
 git config --global user.email "peter@never.lan"
 git config --global user.name "Peter Pan"
 git config --global push.default simple
+git submodule init
+git submodule update
 #======{[ ruby commands ]}=====#
+gem install bundler
+bundle install

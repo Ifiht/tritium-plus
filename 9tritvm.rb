@@ -1,3 +1,6 @@
+require 'rubygems'
+require 'bundler/setup'
+
 require 'fox16'
 require './cpu.rb'
 
@@ -20,9 +23,9 @@ class EightBitVM < FXMainWindow
 
 	def initialize(app)
 		# Invoke the base class initialize first
-		super(app, "8-bit VM", :opts => DECOR_ALL, :width => 800, :height => 600)
+		super(app, "8-bit VM", :opts => DECOR_TITLE|DECOR_CLOSE|DECOR_BORDER|DECOR_MENU, :width => 800, :height => 700)
 
-		@newicon = loadIcon("merry.png")
+		@newicon = loadIcon("blind.png")
 		# Make menu bar
 		menubar = FXMenuBar.new(self, LAYOUT_FILL_X)
 		filemenu = FXMenuPane.new(self)
@@ -36,26 +39,66 @@ class EightBitVM < FXMainWindow
 		}
 
 		# Splitter
-		splitter = FXSplitter.new(self,
+		splitter_v = FXSplitter.new(self,
+			LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|SPLITTER_VERTICAL|SPLITTER_TRACKING)
+		splitter_h = FXSplitter.new(splitter_v,
 			LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|SPLITTER_HORIZONTAL|SPLITTER_TRACKING)
+		# Add a bottom panel
+		bpanel = FXHorizontalFrame.new(splitter_v, 
+			FRAME_SUNKEN|FRAME_THICK|LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, 400,400,400,400, 0,0,0,0)
+		@output_text = FXText.new(bpanel, self, 
+			LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, 800,4,0,800, 400,400,400,0)
 
 		# Add a left panel
-		lpanel = FXHorizontalFrame.new(splitter, 
+		lpanel = FXHorizontalFrame.new(splitter_h, 
 			FRAME_SUNKEN|FRAME_THICK|LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, 400,400,400,400, 0,0,0,0)
 		@input_text = FXText.new(lpanel, self, 
 			LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, 400,400,400,400, 0,0,0,0)
 
 		# Center Button
-		btn = FXButton.new(splitter, "=>\nRUN\n=>", nil,
+		btn = FXButton.new(splitter_h, "=>\nRUN\n=>", nil,
 			self, (ICON_ABOVE_TEXT|BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT))
 
 		# Add a right panel
-		rpanel = FXHorizontalFrame.new(splitter, 
+		rpanel = FXHorizontalFrame.new(splitter_h, 
 			FRAME_SUNKEN|FRAME_THICK|LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, 400,400,400,400, 0,0,0,0)
-		@reg_B = FXTextField.new(rpanel, 8, self, FRAME_SUNKEN|FRAME_THICK|
+		reg_splitter = FXSplitter.new(rpanel,
+			LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|SPLITTER_VERTICAL|SPLITTER_TRACKING)
+		FXLabel.new(reg_splitter, "Reg $B:")
+		@reg_B = FXTextField.new(reg_splitter, 8, self, FRAME_SUNKEN|FRAME_THICK|
+      	LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|TEXTFIELD_READONLY)
+		FXLabel.new(reg_splitter, "Reg $C:")
+		@reg_C = FXTextField.new(reg_splitter, 8, self, FRAME_SUNKEN|FRAME_THICK|
+      	LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|TEXTFIELD_READONLY)
+		FXLabel.new(reg_splitter, "Reg $D:")
+		@reg_D = FXTextField.new(reg_splitter, 8, self, FRAME_SUNKEN|FRAME_THICK|
+      	LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|TEXTFIELD_READONLY)
+		FXLabel.new(reg_splitter, "Reg $E:")
+		@reg_E = FXTextField.new(reg_splitter, 8, self, FRAME_SUNKEN|FRAME_THICK|
+      	LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|TEXTFIELD_READONLY)
+		FXLabel.new(reg_splitter, "Reg $F:")
+		@reg_F = FXTextField.new(reg_splitter, 8, self, FRAME_SUNKEN|FRAME_THICK|
+      	LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|TEXTFIELD_READONLY)
+		FXLabel.new(reg_splitter, "Reg $G:")
+		@reg_G = FXTextField.new(reg_splitter, 8, self, FRAME_SUNKEN|FRAME_THICK|
+      	LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|TEXTFIELD_READONLY)
+		FXLabel.new(reg_splitter, "Reg $K:")
+		@reg_K = FXTextField.new(reg_splitter, 8, self, FRAME_SUNKEN|FRAME_THICK|
+      	LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|TEXTFIELD_READONLY)
+		FXLabel.new(reg_splitter, "Reg $O:")
+		@reg_O = FXTextField.new(reg_splitter, 8, self, FRAME_SUNKEN|FRAME_THICK|
+      	LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|TEXTFIELD_READONLY)
+		FXLabel.new(reg_splitter, "Reg $P:")
+		@reg_P = FXTextField.new(reg_splitter, 8, self, FRAME_SUNKEN|FRAME_THICK|
+      	LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|TEXTFIELD_READONLY)
+		FXLabel.new(reg_splitter, "Reg $Y:")
+		@reg_Y = FXTextField.new(reg_splitter, 8, self, FRAME_SUNKEN|FRAME_THICK|
+      	LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|TEXTFIELD_READONLY)
+		FXLabel.new(reg_splitter, "Reg $Z:")
+		@reg_Z = FXTextField.new(reg_splitter, 8, self, FRAME_SUNKEN|FRAME_THICK|
       	LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|TEXTFIELD_READONLY)
 		@tx_memory = FXText.new(rpanel, self, TEXT_READONLY|
-			LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, 400,400,400,400, 0,0,0,0)
+			LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, 400,400,300,300, 0,0,0,0)
 
 		# Now make the directory list widget (dirlist) the message target
 		# for the text field. If you type a new directory name in the text
@@ -86,7 +129,7 @@ def onCmdAssemble(sender, sel, ptr)
     # Strip trailing spaces
     lines = txl.split('\n')
     lines.each { |line|
-    	line.sub!(/ *$/, "")
+    	line.sub!(/ *$/, "").chomp!
     	#line.sub!(/ *\n/, "")
     }
     @tx_memory.text = lines.join('\n')
