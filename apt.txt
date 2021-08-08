@@ -2,3 +2,6 @@ apt-utils
 pkg-config
 make
 gcc
+g++
+libxrandr-dev
+libfox-1.6-dev
