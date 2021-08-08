@@ -1,0 +1,4 @@
+---
+BUNDLE_DEPLOYMENT: "true"
+BUNDLE_PATH: "./ubuntu20_04/bundle"
+BUNDLE_WITHOUT: "development"

@@ -8,6 +8,7 @@ git config --global push.default simple
 git submodule init
 git submodule update
 #======{[ ruby commands ]}=====#
-gem install bundler
-gem install fxruby
+#gem install bundler
+#gem install fxruby
 #bundle install
+bundle install --local --deployment --path ./ubuntu20_04/bundle --without development

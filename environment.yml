@@ -2,4 +2,4 @@ name: tritium-plus
 channels:
   - conda-forge
 dependencies:
-  - ruby=2.5.*
+  - ruby=2.7.*
