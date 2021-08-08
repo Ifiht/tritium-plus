@@ -95,7 +95,7 @@ opBGE = Proc.new { 1 + 1 } # branch if greater than or equal
 
 # INSTRUCTIONS are 27 trits long, each op-code is 9 trits.
 # R# refers to a general register, while N# refers to an integer value
-@inst_set = { #-------------+ 0-ARG INST +-------------#
+$inst_set = { #-------------+ 0-ARG INST +-------------#
             "NOP" => [1, opNOP],  #FMT: "OP" no operation, do nothing
             "RSA" => [2, opRSA],  #FMT: "OP" reset all registers
             "SBC" => [3, opSBC],  #FMT: "OP" swap registers B & C
@@ -156,8 +156,8 @@ opBGE = Proc.new { 1 + 1 } # branch if greater than or equal
 def interpret(list)
     for inst in list do
         ops = inst.split(" ")
-        if @inst_set.key?(ops[0])
-            op0 = @inst_set[ops[0]]
+        if $inst_set.key?(ops[0])
+            op0 = $inst_set[ops[0]]
 #========================================// 0ARG, op0 1-5
             if op0[0] < 6      
                 op0[1].call
