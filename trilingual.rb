@@ -71,6 +71,7 @@ end
 #| OP-CODE  | 1st REG | 2nd ARG  |  3rd ARG  | Unused/CRC
 #   0000       0000    000000000   000000000     0
 def decode_inst(s)
+    s = s.reverse
     arg1 = s.slice!(0..3).rjust(5, '0')
     arg2 = s.slice!(0..3).rjust(5, '0')
     arg3 = s.slice!(0..8)
@@ -89,5 +90,5 @@ def recode_inst(a)
     s4 = trans10to3(a[3])
     str = s1 + s2 + s3 + s4
     str = str.ljust(1, '0')
-    return str
+    return str.reverse
 end
