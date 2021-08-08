@@ -1,7 +1,7 @@
 # big-endian
 # word = 00000000+ = 6561, 100000000 = 1
 # memory = 100000000-+0000000, 2 words, 1 then 2
-# all trilobytes & words are read left <- right
+# all trilobytes & words are read left -> right
 def fwdval(c)
     d = {"0" => 0, "+" => 1, "-" => -1}
     if d.key?(c)
@@ -89,6 +89,6 @@ def recode_inst(a)
     s3 = trans10to3(a[2])
     s4 = trans10to3(a[3])
     str = s1 + s2 + s3 + s4
-    strf = str.ljust(1, '0')
+    strf = str.rjust(1, '0')
     return strf.reverse
 end
