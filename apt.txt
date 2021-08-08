@@ -1,7 +1,5 @@
 apt-utils
 pkg-config
-make
-gcc
-g++
+build-essential
 libxrandr-dev
 libfox-1.6-dev
