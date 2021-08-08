@@ -10,11 +10,11 @@ end
 # B:C - general purpose register pair
 # D:E - general purpose register pair
 # F:G - general purpose register pair
-# K - carry register
-# O - overflow trit
+# K - ARG1
+# O - opcode register
 # P - program counter
-# Y - comparison register
-# Z - check trit register
+# Y - ARG2
+# Z - ARG3
 $regB = Register.new(0)
 $regC = Register.new(0)
 $regD = Register.new(0)
@@ -32,30 +32,23 @@ reg_num = {"$B" => 0, "$D" => 2, "$F" => 4, "$K" => 6, "$P" => 8, "$Y" => 9,
            "$C" => 1, "$E" => 3, "$G" => 5, "$O" => 7, "$Z" => 10}
 #=-------------------------+ 0-ARG INST +------------=#
 opNOP = lambda {|st| return st } # no operation, do nothing
-opRSA = lambda {|st|  st["$B"]=trans10to3(0);
-                      st["$C"]=trans10to3(0);
-                      st["$D"]=trans10to3(0);
-                      st["$E"]=trans10to3(0);
-                      st["$F"]=trans10to3(0);
-                      st["$G"]=trans10to3(0);
-                      st["$K"]=trans10to3(0);
-                      st["$O"]=trans10to3(0);
-                      st["$P"]=trans10to3(0);
-                      st["$Y"]=trans10to3(0);
-                      st["$Z"]=trans10to3(0); return st} # reset all registers
-opSBC = lambda { t = $regB.vlu; $regB.vlu = $regC.vlu; $regC.vlu = t } # swap registers B & C
-opSDE = lambda { t = $regD.vlu; $regD.vlu = $regE.vlu; $regE.vlu = t } # swap registers D & E
-opSFG = lambda { t = $regF.vlu; $regF.vlu = $regG.vlu; $regG.vlu = t } # swap registers F & G
+opRSA = lambda {|st|  st["$B"]=trans10to3(0); st["$C"]=trans10to3(0); st["$D"]=trans10to3(0); 
+                      st["$E"]=trans10to3(0); st["$F"]=trans10to3(0); st["$G"]=trans10to3(0); 
+                      st["$K"]=trans10to3(0); st["$O"]=trans10to3(0); st["$P"]=trans10to3(0); 
+                      st["$Y"]=trans10to3(0); st["$Z"]=trans10to3(0); return st } # reset all registers
+opSBC = lambda {|st| t = st["$B"]; st["$B"] = st["$C"]; st["$C"] = t; return st } # swap registers B & C
+opSDE = lambda {|st| t = st["$B"]; st["$B"] = st["$C"]; st["$C"] = t; return st } # swap registers D & E
+opSFG = lambda {|st| t = st["$B"]; st["$B"] = st["$C"]; st["$C"] = t; return st } # swap registers F & G
 #=-------------------------+ 1-ARG INST +------------=#
-opTS1 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[0]); return st} # test most significant trit (><= 0)
-opTS2 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[1]); return st} # test most significant trit +1 (><= 0)
-opTS3 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[2]); return st} # test most significant trit +2 (><= 0)
-opTS4 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[3]); return st} # test most significant trit +3 (><= 0)
-opTS5 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[4]); return st} # test most significant trit +4 (><= 0)
-opTS6 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[5]); return st} # test most significant trit +5 (><= 0)
-opTS7 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[6]); return st} # test most significant trit +6 (><= 0)
-opTS8 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[7]); return st} # test most significant trit +7 (><= 0)
-opTS9 = lambda {|st, a| s = trans10to3(a); st["$Y"] = trans3to10(s[8]); return st} # test least significant trit (><= 0)
+opTS1 = lambda {|st, a| s = st[a]; st["$G"] = s[0].rjust(9, '0'); return st} # test most significant trit (><= 0)
+opTS2 = lambda {|st, a| s = st[a]; st["$G"] = s[1].rjust(9, '0'); return st} # test most significant trit +1 (><= 0)
+opTS3 = lambda {|st, a| s = st[a]; st["$G"] = s[2].rjust(9, '0'); return st} # test most significant trit +2 (><= 0)
+opTS4 = lambda {|st, a| s = st[a]; st["$G"] = s[3].rjust(9, '0'); return st} # test most significant trit +3 (><= 0)
+opTS5 = lambda {|st, a| s = st[a]; st["$G"] = s[4].rjust(9, '0'); return st} # test most significant trit +4 (><= 0)
+opTS6 = lambda {|st, a| s = st[a]; st["$G"] = s[5].rjust(9, '0'); return st} # test most significant trit +5 (><= 0)
+opTS7 = lambda {|st, a| s = st[a]; st["$G"] = s[6].rjust(9, '0'); return st} # test most significant trit +6 (><= 0)
+opTS8 = lambda {|st, a| s = st[a]; st["$G"] = s[7].rjust(9, '0'); return st} # test most significant trit +7 (><= 0)
+opTS9 = lambda {|st, a| s = st[a]; st["$G"] = s[8].rjust(9, '0'); return st} # test least significant trit (><= 0)
 opJMP = lambda { 1 + 1 } # jump unconditionally
 opJAL = lambda { 1 + 1 } # jump and link
 opRST = lambda { 1 + 1 } # reset register
@@ -165,35 +158,39 @@ def interpret(inst, state)
         op0 = $inst_set[ops[0]]
 #========================================// 0ARG, op0 1-5
         if op0[0] < 6
-            if op0.count != 0
+            if ops.count != 1
                 puts "wrong number of arguments to #{ops[0]}"
             else
+                state["$O"] = trans10to3(op0[0])
                 state = op0[1].call(state)
-                meminst = trans10to3(op0[0]) + "000000000000000000"
+                meminst = recode_inst([trans3to10(state["$O"]), trans3to10(state["$K"]), trans3to10(state["$Y"]), trans3to10(state["$Z"])])
             end
 #========================================// 1ARG, op0 6-22
         elsif op0[0] < 23
-            if op0.count != 0
+            if ops.count != 2
                 puts "wrong number of arguments to #{ops[0]}"
             else
+                state["$O"] = trans10to3(op0[0])
                 state = op0[1].call(state, ops[1])
-                meminst = trans10to3(op0[0]) + "000000000000000000"
+                meminst = recode_inst([trans3to10(state["$O"]), trans3to10(state["$K"]), trans3to10(state["$Y"]), trans3to10(state["$Z"])])
             end
 #========================================// 2ARG, op0 23-27
         elsif op0[0] < 28
-            if op0.count != 0
+            if ops.count != 3
                 puts "wrong number of arguments to #{ops[0]}"
             else
+                state["$O"] = trans10to3(op0[0])
                 state = op0[1].call(state, ops[1], ops[2])
-                meminst = trans10to3(op0[0]) + "000000000000000000"
+                meminst = recode_inst([trans3to10(state["$O"]), trans3to10(state["$K"]), trans3to10(state["$Y"]), trans3to10(state["$Z"])])
             end
 #========================================// 3ARG, op0 28-50
         else
-            if op0.count != 0
+            if ops.count != 4
                 puts "wrong number of arguments to #{ops[0]}"
             else
+                state["$O"] = trans10to3(op0[0])
                 state = op0[1].call(state, ops[1], ops[2], ops[3])
-                meminst = trans10to3(op0[0]) + "000000000000000000"
+                meminst = recode_inst([trans3to10(state["$O"]), trans3to10(state["$K"]), trans3to10(state["$Y"]), trans3to10(state["$Z"])])
             end
         end
         pc_0 = trans3to10(state["$P"])

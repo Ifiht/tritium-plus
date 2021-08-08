@@ -40,18 +40,19 @@ class EightBitVM < FXMainWindow
 		# Splitter
 		splitter_v = FXSplitter.new(self, LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|SPLITTER_VERTICAL|SPLITTER_TRACKING)
 		splitter_h = FXSplitter.new(splitter_v, LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|SPLITTER_HORIZONTAL|SPLITTER_TRACKING)
-		# Add a bottom panel
-		bpanel = FXHorizontalFrame.new(splitter_v, FRAME_SUNKEN|FRAME_THICK|LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, 400,400,400,400, 0,0,0,0)
-		@output_text = FXText.new(bpanel, self, LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, 800,4,0,800, 400,400,400,0)
-
+		
 		# Add a left panel
 		lpanel = FXHorizontalFrame.new(splitter_h, 
 			FRAME_SUNKEN|FRAME_THICK|LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, 400,400,400,400, 0,0,0,0)
-		splitter_lpanel = FXSplitter.new(lpanel, LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|SPLITTER_VERTICAL|SPLITTER_TRACKING)
-		FXLabel.new(splitter_lpanel, "|%==========[ CODE EDITOR ]==========%|", :opts => JUSTIFY_CENTER_X ).setFont(FXFont.new(getApp(), "Consolas", 14, FONTWEIGHT_BOLD))
 
+		splitter_lpanel = FXSplitter.new(lpanel, LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|SPLITTER_VERTICAL|SPLITTER_TRACKING)
+
+		FXLabel.new(splitter_lpanel, "|%==========[ CODE EDITOR ]==========%|", :opts => JUSTIFY_CENTER_X ).setFont(FXFont.new(getApp(), "Consolas", 14, FONTWEIGHT_BOLD))
 		@input_text = FXText.new(splitter_lpanel, self, 
-			LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, 400,400,400,400, 0,0,0,0)
+			LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, :height => 450)#400,400,400,400, 0,0,0,0)
+		FXLabel.new(splitter_lpanel, "|%===============[ OUTPUT ]==============%|", :opts => JUSTIFY_CENTER_X ).setFont(FXFont.new(getApp(), "Consolas", 12, FONTWEIGHT_BOLD))
+		@output_text = FXText.new(splitter_lpanel, self,
+			LAYOUT_LEFT|LAYOUT_TOP|LAYOUT_FILL_X, :height => 300)
 
 		# Center Button
 		btn = FXButton.new(splitter_h, "=>\nRUN\n=>", nil,
@@ -137,7 +138,7 @@ class EightBitVM < FXMainWindow
 		@input_text.selector = FXWindow::ID_SETVALUE
 		@input_text.setFont(FXFont.new(getApp(), "Consolas", 12))
 
-		@output_text.setFont(FXFont.new(getApp(), "Consolas", 14))
+		@output_text.setFont(FXFont.new(getApp(), "Consolas", 10))
 
 		@state = [$regB.vlu, $regC.vlu, $regD.vlu, $regE.vlu, $regF.vlu, $regG.vlu, 
     					$regK.vlu, $regO.vlu, $regP.vlu, $regY.vlu, $regZ.vlu, @inst_mem, @data_mem]
@@ -179,11 +180,13 @@ def onCmdAssemble(sender, sel, ptr)
     $reg_Z.text = @state["$Z"]; $regB = @state["$Z"]
     @inst_mem = @state["IMEM"]
     @data_mem = @state["DMEM"]
+  	pc_0 = trans3to10(@state["$P"])
+		pc_stop = pc_0 + 27
+		memout = "#{pc_0}: " + @state["IMEM"].slice(pc_0..pc_stop) + "\r\n"
+		@output_text.text = @output_text.text + memout
+  	@prog_mem = @data_mem + "101010101" + @inst_mem
+  	@tx_memory.text = @prog_mem
+  	pc_0 = pc_stop
+  	@state["$P"] = trans10to3(pc_0)
   }
-  pc_0 = trans3to10(@state["$P"])
-	pc_stop = pc_0 + 27
-	meminst = @state["IMEM"].slice(pc_0..pc_stop) + "\r\n"
-	@output_text.appendText(meminst)
-  @prog_mem = @data_mem + "101010101" + @inst_mem
-  @tx_memory.text = @prog_mem
 end
