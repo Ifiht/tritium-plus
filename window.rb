@@ -184,7 +184,7 @@ def onCmdAssemble(sender, sel, ptr)
 		pc_stop = pc_0 + 27
 		memout = "#{pc_0}: " + @state["IMEM"].slice(pc_0..pc_stop) + "\r\n"
 		@output_text.text = @output_text.text + memout
-  	@prog_mem = @data_mem + "101010101" + @inst_mem
+  	@prog_mem = @data_mem + "+0+0+0+0+" + @inst_mem
   	@tx_memory.text = @prog_mem
   	pc_0 = pc_stop
   	@state["$P"] = trans10to3(pc_0)

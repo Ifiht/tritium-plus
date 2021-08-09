@@ -21,8 +21,8 @@ def revval(c)
 end
 
 def trans10to3(n)
-    if n > 6561 || n < -6561
-        puts "number exceeds trilobyte integer range (-6561 to 6561)"
+    if n > 9841 || n < -9841
+        puts "number exceeds trilobyte integer range (-9841 to 9841)"
         return ""
     else
         numstr = ""
@@ -91,4 +91,96 @@ def recode_inst(a)
     s4 = trans10to3(a[3])
     str = s1 + s2 + s3 + s4
     return str
+end
+
+def trn_AND(a, b)
+    if a.length != 9 || b.length != 9
+        puts "received comparitors do not have 9 trits"
+        return ""
+    else
+        c = ""
+        for i in 0..8
+            if a[i] == b[i] && b[i] == '-'
+                c[i] = '+'
+            elsif a[i] == b[i] && b[i] == '+'
+                c[i] = '+'
+            elsif b[i] == '0'
+                c[i] = '0'
+            elsif a[i] == '0'
+                c[i] = '0'
+            else
+                c[i] = '-'
+            end
+        end
+        return c
+    end
+end
+
+def trn_OR(a, b)
+    if a.length != 9 || b.length != 9
+        puts "received comparitors do not have 9 trits"
+        return ""
+    else
+        c = ""
+        for i in 0..8
+            if a[i] == b[i]
+                c[i] = b[i]
+            elsif a[i] == '0'
+                c[i] = b[i]
+            elsif b[i] == '0'
+                c[i] = a[i]
+            elsif (a[i] == '+' && b[i] == '-') || (a[i] == '-' && b[i] == '+')
+                c[i] = '0'
+            else
+                c[i] = '0'
+            end
+        end
+        return c
+    end
+end
+
+def trn_NOR(a, b)
+    if a.length != 9 || b.length != 9
+        puts "received comparitors do not have 9 trits"
+        return ""
+    else
+        c = ""
+        for i in 0..8
+            if a[i] == b[i]
+                c[i] = b[i]
+            elsif a[i] == '0'
+                c[i] = b[i]
+            elsif b[i] == '0'
+                c[i] = a[i]
+            elsif (a[i] == '+' && b[i] == '-') || (a[i] == '-' && b[i] == '+')
+                c[i] = '0'
+            else
+                c[i] = '0'
+            end
+        end
+        return c
+    end
+end
+
+def trn_XOR(a, b)
+    if a.length != 9 || b.length != 9
+        puts "received comparitors do not have 9 trits"
+        return ""
+    else
+        c = ""
+        for i in 0..8
+            if a[i] == b[i]
+                c[i] = '0'
+            elsif (a[i] == '+' && b[i] == '-') || (a[i] == '-' && b[i] == '+')
+                c[i] = '0'
+            elsif b[i] == '0'
+                c[i] = a[i]
+            elsif a[i] == '0'
+                c[i] = b[i]
+            else
+                c[i] = '0'
+            end
+        end
+        return c
+    end
 end
