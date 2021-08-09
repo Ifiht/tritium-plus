@@ -1,0 +1,18 @@
+### Program-1 (do not include this line!)
+SET $B 1
+SET $C 2
+ADD $D $B $C
+SUB $E $B $C
+ADI $F $B 9
+POW $G $F $B
+
+### Program-2 (do not include this line!)
+SET $B 18
+SET $C 9841
+PUT $B $C
+
+### Program-3 (do not include this line!)
+SET $B 13
+SET $C -13
+ORR $D $B $C
+AND $E $B $C
