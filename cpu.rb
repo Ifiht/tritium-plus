@@ -40,58 +40,58 @@ opSBC = lambda {|st| t = st["$B"]; st["$B"] = st["$C"]; st["$C"] = t; return st 
 opSDE = lambda {|st| t = st["$B"]; st["$B"] = st["$C"]; st["$C"] = t; return st } # swap registers D & E
 opSFG = lambda {|st| t = st["$B"]; st["$B"] = st["$C"]; st["$C"] = t; return st } # swap registers F & G
 #=-------------------------+ 1-ARG INST +------------=#
-opTS1 = lambda {|st, a| s = st[a]; st["$G"] = s[0].rjust(9, '0'); return st} # test most significant trit (><= 0)
-opTS2 = lambda {|st, a| s = st[a]; st["$G"] = s[1].rjust(9, '0'); return st} # test most significant trit +1 (><= 0)
-opTS3 = lambda {|st, a| s = st[a]; st["$G"] = s[2].rjust(9, '0'); return st} # test most significant trit +2 (><= 0)
-opTS4 = lambda {|st, a| s = st[a]; st["$G"] = s[3].rjust(9, '0'); return st} # test most significant trit +3 (><= 0)
-opTS5 = lambda {|st, a| s = st[a]; st["$G"] = s[4].rjust(9, '0'); return st} # test most significant trit +4 (><= 0)
-opTS6 = lambda {|st, a| s = st[a]; st["$G"] = s[5].rjust(9, '0'); return st} # test most significant trit +5 (><= 0)
-opTS7 = lambda {|st, a| s = st[a]; st["$G"] = s[6].rjust(9, '0'); return st} # test most significant trit +6 (><= 0)
-opTS8 = lambda {|st, a| s = st[a]; st["$G"] = s[7].rjust(9, '0'); return st} # test most significant trit +7 (><= 0)
-opTS9 = lambda {|st, a| s = st[a]; st["$G"] = s[8].rjust(9, '0'); return st} # test least significant trit (><= 0)
-opJMP = lambda {|st, a| st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st } # jump unconditionally
-opJAL = lambda {|st, a| st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st } # jump and link
-opRST = lambda {|st, a| st[a] = trans10to3(0); return st } # reset register
-opPSH = lambda {|st, a| st["DMEM"] = st[a] + st["DMEM"][0..-9]; return st } # push into the stack
-opPOP = lambda {|st, a| st[a] = st["DMEM"][0..8]; st["DMEM"] = st["DMEM"][9..] + '000000000'; return st } # pop out of the stack
-opSHR = lambda {|st, a| st[a] = '0' + st[a][1..8]; return st } # shift right by one trit
-opSHL = lambda {|st, a| st[a] = st[a][0..7] + '0'; return st } # shift left by one trit
-opCRC = lambda {|st, a| return st } # calculate check trit (via sequential XOR)
+opTS1 = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); s = st[a]; st["$G"] = s[0].rjust(9, '0'); return st} # test most significant trit (><= 0)
+opTS2 = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); s = st[a]; st["$G"] = s[1].rjust(9, '0'); return st} # test most significant trit +1 (><= 0)
+opTS3 = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); s = st[a]; st["$G"] = s[2].rjust(9, '0'); return st} # test most significant trit +2 (><= 0)
+opTS4 = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); s = st[a]; st["$G"] = s[3].rjust(9, '0'); return st} # test most significant trit +3 (><= 0)
+opTS5 = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); s = st[a]; st["$G"] = s[4].rjust(9, '0'); return st} # test most significant trit +4 (><= 0)
+opTS6 = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); s = st[a]; st["$G"] = s[5].rjust(9, '0'); return st} # test most significant trit +5 (><= 0)
+opTS7 = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); s = st[a]; st["$G"] = s[6].rjust(9, '0'); return st} # test most significant trit +6 (><= 0)
+opTS8 = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); s = st[a]; st["$G"] = s[7].rjust(9, '0'); return st} # test most significant trit +7 (><= 0)
+opTS9 = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); s = st[a]; st["$G"] = s[8].rjust(9, '0'); return st} # test least significant trit (><= 0)
+opJMP = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st } # jump unconditionally
+opJAL = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st } # jump and link
+opRST = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); st[a] = trans10to3(0); return st } # reset register
+opPSH = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); st["DMEM"] = st[a] + st["DMEM"][0..-9]; return st } # push into the stack
+opPOP = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); st[a] = st["DMEM"][0..8]; st["DMEM"] = st["DMEM"][9..] + '000000000'; return st } # pop out of the stack
+opSHR = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); st[a] = '0' + st[a][1..8]; return st } # shift right by one trit
+opSHL = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); st[a] = st[a][0..7] + '0'; return st } # shift left by one trit
+opCRC = lambda {|st, a| st["$K"] = trans10to3(reg_num[a]); st["$G"] = trn_XOR(st[a], '+++++++++'); return st } # calculate check trit (via sequential XOR)
 #=-------------------------+ 2-ARG INST +------------=#
-opPUT = lambda {|st, a, b| ma = trans3to10(st[a]); st["DMEM"].slice!(ma..(ma+9)); st["DMEM"] = st["DMEM"].insert(ma, st[b]); return st} # store in memory
-opGET = lambda {|st, a, b| ma = trans3to10(st[b]); st[a] = st["DMEM"].slice(ma..(ma+9)); return st} # load from memory
-opINC = lambda {|st, a, b| st[a] = trans10to3(b.to_i + 1); return st} # increment (add 1)
-opDEC = lambda {|st, a, b| st[a] = trans10to3(b.to_i - 1); return st} # decrement (subtract 1)
-opSET = lambda {|st, a, b| st[a] = trans10to3(b.to_i); return st} # set register value
+opPUT = lambda {|st, a, b| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); ma = trans3to10(st[a]); st["DMEM"].slice!(ma..(ma+9)); st["DMEM"] = st["DMEM"].insert(ma, st[b]); return st} # store in memory
+opGET = lambda {|st, a, b| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); ma = trans3to10(st[b]); st[a] = st["DMEM"].slice(ma..(ma+9)); return st} # load from memory
+opINC = lambda {|st, a, b| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st[a] = trans10to3(b.to_i + 1); return st} # increment (add 1)
+opDEC = lambda {|st, a, b| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st[a] = trans10to3(b.to_i - 1); return st} # decrement (subtract 1)
+opSET = lambda {|st, a, b| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(b.to_i); st[a] = trans10to3(b.to_i); return st} # set register value
 #=-------------------------+ 3-ARG INST +------------=#
-opADD = lambda {|st, a, b, c| st[a] = trans10to3(trans3to10(st[b]) + trans3to10(st[c])); return st} # basic addition
-opADI = lambda {|st, a, b, c| st[a] = trans10to3(trans3to10(st[b]) + st[c].to_i); return st} # add immediate
-opSUB = lambda {|st, a, b, c| st[a] = trans10to3(trans3to10(st[b]) - trans3to10(st[c])); return st} # basic subtraction
-opSBI = lambda {|st, a, b, c| st[a] = trans10to3(trans3to10(st[b]) - st[c].to_i); return st} # subtract immediate
-opMLT = lambda {|st, a, b, c| st[a] = trans10to3(trans3to10(st[b]) * trans3to10(st[c])); return st} # multiply
-opMYI = lambda {|st, a, b, c| st[a] = trans10to3(trans3to10(st[b]) * st[c].to_i); return st} # multiply immediate
-opDIV = lambda {|st, a, b, c| st[a] = trans10to3(trans3to10(st[b]) / trans3to10(st[c])); return st} # divide
-opDVI = lambda {|st, a, b, c| st[a] = trans10to3(trans3to10(st[b]) / st[c].to_i); return st} # divide immediate
-opPOW = lambda {|st, a, b, c| st[a] = trans10to3(trans3to10(st[b]) ** trans3to10(st[c])); return st} # power operator
-opLOG = lambda {|st, a, b, c| st[a] = trans10to3(Math.log(trans3to10(st[b]),  trans3to10(st[c]))); return st} # logarithm operator
-opAND = lambda {|st, a, b, c| st[a] = trn_AND(st[b], st[c]); return st} # logical "AND"
-opANI = lambda {|st, a, b, c| st[a] = trn_AND(st[b], trans10to3(c.to_i)); return st} # logical "AND", immediate
-opORR = lambda {|st, a, b, c| st[a] = trn_OR(st[b], st[c]); return st} # logical "OR"
-opORI = lambda {|st, a, b, c| st[a] = trn_OR(st[b], trans10to3(c.to_i)); return st} # logical "OR", immediate
-opNOR = lambda {|st, a, b, c| st[a] = trn_NOR(st[b], st[c]); return st} # logical "NOR"
-opXOR = lambda {|st, a, b, c| st[a] = trn_XOR(st[b], st[c]); return st} # logical "XOR"
-opMOD = lambda {|st, a, b, c| st[a] = trans10to3(trans3to10(st[b]) % trans3to10(st[c])); return st} # modulus operator 
-opBEQ = lambda {|st, a, b, c| if trans3to10(st[b]) == trans3to10(st[c]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st; else return st end} # branch if equal
-opBNE = lambda {|st, a, b, c| if trans3to10(st[b]) != trans3to10(st[c]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st; else return st end} # branch if not equal
-opBLT = lambda {|st, a, b, c| if trans3to10(st[b]) < trans3to10(st[c]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st; else return st end} # branch if less than
-opBLE = lambda {|st, a, b, c| if trans3to10(st[b]) <= trans3to10(st[c]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st; else return st end} # branch if less than or equal
-opBGT = lambda {|st, a, b, c| if trans3to10(st[b]) > trans3to10(st[c]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st; else return st end} # branch if greater than
-opBGE = lambda {|st, a, b, c| if trans3to10(st[b]) >= trans3to10(st[c]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st; else return st end} # branch if greater than or equal
+opADD = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); st[a] = trans10to3(trans3to10(st[b]) + trans3to10(st[c])); return st} # basic addition
+opADI = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(c.to_i); st[a] = trans10to3(trans3to10(st[b]) + st[c].to_i); return st} # add immediate
+opSUB = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); st[a] = trans10to3(trans3to10(st[b]) - trans3to10(st[c])); return st} # basic subtraction
+opSBI = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(c.to_i); st[a] = trans10to3(trans3to10(st[b]) - st[c].to_i); return st} # subtract immediate
+opMLT = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); st[a] = trans10to3(trans3to10(st[b]) * trans3to10(st[c])); return st} # multiply
+opMYI = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(c.to_i); st[a] = trans10to3(trans3to10(st[b]) * st[c].to_i); return st} # multiply immediate
+opDIV = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); st[a] = trans10to3(trans3to10(st[b]) / trans3to10(st[c])); return st} # divide
+opDVI = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(c.to_i); st[a] = trans10to3(trans3to10(st[b]) / st[c].to_i); return st} # divide immediate
+opPOW = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); st[a] = trans10to3(trans3to10(st[b]) ** trans3to10(st[c])); return st} # power operator
+opLOG = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); st[a] = trans10to3(Math.log(trans3to10(st[b]),  trans3to10(st[c]))); return st} # logarithm operator
+opAND = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); st[a] = trn_AND(st[b], st[c]); return st} # logical "AND"
+opANI = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(c.to_i); st[a] = trn_AND(st[b], trans10to3(c.to_i)); return st} # logical "AND", immediate
+opORR = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); st[a] = trn_OR(st[b], st[c]); return st} # logical "OR"
+opORI = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(c.to_i); st[a] = trn_OR(st[b], trans10to3(c.to_i)); return st} # logical "OR", immediate
+opNOR = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); st[a] = trn_NOR(st[b], st[c]); return st} # logical "NOR"
+opXOR = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); st[a] = trn_XOR(st[b], st[c]); return st} # logical "XOR"
+opMOD = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); st[a] = trans10to3(trans3to10(st[b]) % trans3to10(st[c])); return st} # modulus operator 
+opBEQ = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); if trans3to10(st[b]) == trans3to10(st[c]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st; else return st end} # branch if equal
+opBNE = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); if trans3to10(st[b]) != trans3to10(st[c]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st; else return st end} # branch if not equal
+opBLT = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); if trans3to10(st[b]) < trans3to10(st[c]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st; else return st end} # branch if less than
+opBLE = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); if trans3to10(st[b]) <= trans3to10(st[c]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st; else return st end} # branch if less than or equal
+opBGT = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); if trans3to10(st[b]) > trans3to10(st[c]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st; else return st end} # branch if greater than
+opBGE = lambda {|st, a, b, c| st["$K"] = trans10to3(reg_num[a]); st["$Y"] = trans10to3(reg_num[b]); st["$Z"] = trans10to3(reg_num[c]); if trans3to10(st[b]) >= trans3to10(st[c]); st["P"] = trans10to3(trans3to10(st[a]) + trans3to10(st["P"])); return st; else return st end} # branch if greater than or equal
 
 # INSTRUCTIONS are 27 trits long, each op-code is 4 trits.
 # R# refers to a general register, while N# refers to an integer value
-#| OP-CODE  | 1st REG | 2nd ARG  |  3rd ARG  | Unused
-#   0000       000     000000000   000000000   00
+#| OP-CODE  | 1st REG | 2nd ARG  |  3rd ARG  |
+#   00000      0000    000000000   000000000
 $inst_set = { #-------------+ 0-ARG INST +-------------#
             "NOP" => [1, opNOP],  #FMT: "OP" no operation, do nothing
             "RSA" => [2, opRSA],  #FMT: "OP" reset all registers
